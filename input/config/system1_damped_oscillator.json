@@ -1,0 +1,19 @@
+{
+  "system": "damped_oscillator",
+  "oscillator": {
+    "mass": 70.0,
+    "springConstant": 10000.0,
+    "damping": 100.0,
+    "amplitude": 1.0,
+    "totalTime": 5.0
+  },
+  "sweep": {
+    "integrators": ["beeman", "verlet", "velocityVerlet", "eulerPC"],
+    "dtValues": [0.005, 0.002, 0.001, 0.0005, 0.0002, 0.0001, 0.00005, 0.00002, 0.00001, 0.000005, 0.000002, 0.000001],
+    "trajectoryDts": [0.005, 0.001]
+  },
+  "output": {
+    "directory": "output/system1",
+    "overwrite": false
+  }
+}
