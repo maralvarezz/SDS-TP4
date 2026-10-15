@@ -52,7 +52,7 @@ class OscillatorTest {
 
     @Test
     void sampleConfigParses() throws Exception {
-        var tree = ConfigLoader.readTree(Path.of("../input/config/system1_damped_oscillator.json"));
+        var tree = ConfigLoader.readTree(Path.of("../input/config/config_sys1_exp1.json"));
         var cfg = ConfigLoader.loadOscillator(tree);
         assertEquals(4, cfg.sweep().integrators().size());
         assertTrue(cfg.sweep().dtValues().stream().allMatch(dt -> dt < 1e-2));

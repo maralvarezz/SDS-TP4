@@ -18,4 +18,8 @@ public final class ConfigLoader {
     public static DampedOscillatorConfig loadOscillator(JsonNode tree) throws IOException {
         return MAPPER.treeToValue(tree, DampedOscillatorConfig.class);
     }
+
+    public static CircularBilliardConfig loadBilliard(JsonNode tree) throws IOException {
+        return MAPPER.treeToValue(tree, CircularBilliardConfig.class);
+    }
 }

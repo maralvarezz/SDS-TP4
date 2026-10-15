@@ -1,0 +1,90 @@
+N=25 realizacion 1/10 seed=20285916 runtime=12.58075 ms
+N=25 realizacion 2/10 seed=20285917 runtime=11.595292 ms
+N=25 realizacion 3/10 seed=20285918 runtime=11.4915 ms
+N=25 realizacion 4/10 seed=20285919 runtime=11.853708 ms
+N=25 realizacion 5/10 seed=20285920 runtime=12.273292 ms
+N=25 realizacion 6/10 seed=20285921 runtime=12.43725 ms
+N=25 realizacion 7/10 seed=20285922 runtime=12.3665 ms
+N=25 realizacion 8/10 seed=20285923 runtime=12.073625 ms
+N=25 realizacion 9/10 seed=20285924 runtime=11.738875 ms
+N=25 realizacion 10/10 seed=20285925 runtime=12.004333 ms
+N=50 realizacion 1/10 seed=20310916 runtime=32.342042 ms
+N=50 realizacion 2/10 seed=20310917 runtime=35.229333 ms
+N=50 realizacion 3/10 seed=20310918 runtime=31.805208 ms
+N=50 realizacion 4/10 seed=20310919 runtime=31.631584 ms
+N=50 realizacion 5/10 seed=20310920 runtime=31.288792 ms
+N=50 realizacion 6/10 seed=20310921 runtime=31.521709 ms
+N=50 realizacion 7/10 seed=20310922 runtime=31.812167 ms
+N=50 realizacion 8/10 seed=20310923 runtime=30.988584 ms
+N=50 realizacion 9/10 seed=20310924 runtime=32.193458 ms
+N=50 realizacion 10/10 seed=20310925 runtime=31.454792 ms
+N=100 realizacion 1/10 seed=20360916 runtime=161.002875 ms
+N=100 realizacion 2/10 seed=20360917 runtime=156.708917 ms
+N=100 realizacion 3/10 seed=20360918 runtime=167.755834 ms
+N=100 realizacion 4/10 seed=20360919 runtime=157.587208 ms
+N=100 realizacion 5/10 seed=20360920 runtime=162.078959 ms
+N=100 realizacion 6/10 seed=20360921 runtime=159.430875 ms
+N=100 realizacion 7/10 seed=20360922 runtime=157.912 ms
+N=100 realizacion 8/10 seed=20360923 runtime=155.929375 ms
+N=100 realizacion 9/10 seed=20360924 runtime=152.956708 ms
+N=100 realizacion 10/10 seed=20360925 runtime=153.278791 ms
+N=200 realizacion 1/10 seed=20460916 runtime=1235.762958 ms
+N=200 realizacion 2/10 seed=20460917 runtime=1251.159625 ms
+N=200 realizacion 3/10 seed=20460918 runtime=1268.558083 ms
+N=200 realizacion 4/10 seed=20460919 runtime=1308.361417 ms
+N=200 realizacion 5/10 seed=20460920 runtime=1243.449708 ms
+N=200 realizacion 6/10 seed=20460921 runtime=1343.161958 ms
+N=200 realizacion 7/10 seed=20460922 runtime=1298.78725 ms
+N=200 realizacion 8/10 seed=20460923 runtime=1262.708083 ms
+N=200 realizacion 9/10 seed=20460924 runtime=1226.202875 ms
+N=200 realizacion 10/10 seed=20460925 runtime=1247.433542 ms
+N=300 realizacion 1/10 seed=20560916 runtime=5426.005083 ms
+N=300 realizacion 2/10 seed=20560917 runtime=5556.025708 ms
+N=300 realizacion 3/10 seed=20560918 runtime=5763.572958 ms
+N=300 realizacion 4/10 seed=20560919 runtime=6043.744375 ms
+N=300 realizacion 5/10 seed=20560920 runtime=5711.000583 ms
+N=300 realizacion 6/10 seed=20560921 runtime=6600.251666 ms
+N=300 realizacion 7/10 seed=20560922 runtime=5794.765792 ms
+N=300 realizacion 8/10 seed=20560923 runtime=5897.652917 ms
+N=300 realizacion 9/10 seed=20560924 runtime=5854.544667 ms
+N=300 realizacion 10/10 seed=20560925 runtime=5642.40975 ms
+N=400 realizacion 1/10 seed=20660916 runtime=19377.072667 ms
+N=400 realizacion 2/10 seed=20660917 runtime=18522.542542 ms
+N=400 realizacion 3/10 seed=20660918 runtime=19171.991125 ms
+N=400 realizacion 4/10 seed=20660919 runtime=18375.096125 ms
+N=400 realizacion 5/10 seed=20660920 runtime=18657.329584 ms
+N=400 realizacion 6/10 seed=20660921 runtime=18549.300708 ms
+N=400 realizacion 7/10 seed=20660922 runtime=18567.374084 ms
+N=400 realizacion 8/10 seed=20660923 runtime=18511.121459 ms
+N=400 realizacion 9/10 seed=20660924 runtime=18760.1155 ms
+N=400 realizacion 10/10 seed=20660925 runtime=18713.119459 ms
+N=500 realizacion 1/10 seed=20760916 runtime=49130.522084 ms
+N=500 realizacion 2/10 seed=20760917 runtime=47861.290125 ms
+N=500 realizacion 3/10 seed=20760918 runtime=48418.447916 ms
+N=500 realizacion 4/10 seed=20760919 runtime=48433.428667 ms
+N=500 realizacion 5/10 seed=20760920 runtime=48180.907292 ms
+N=500 realizacion 6/10 seed=20760921 runtime=48193.348709 ms
+N=500 realizacion 7/10 seed=20760922 runtime=47782.87775 ms
+N=500 realizacion 8/10 seed=20760923 runtime=48280.5935 ms
+N=500 realizacion 9/10 seed=20760924 runtime=48726.0915 ms
+N=500 realizacion 10/10 seed=20760925 runtime=48862.43125 ms
+N=600 realizacion 1/10 seed=20860916 runtime=97585.163584 ms
+N=600 realizacion 2/10 seed=20860917 runtime=98344.059542 ms
+N=600 realizacion 3/10 seed=20860918 runtime=97590.658709 ms
+N=600 realizacion 4/10 seed=20860919 runtime=97643.453667 ms
+N=600 realizacion 5/10 seed=20860920 runtime=97936.711667 ms
+N=600 realizacion 6/10 seed=20860921 runtime=98107.69875 ms
+N=600 realizacion 7/10 seed=20860922 runtime=97226.84625 ms
+N=600 realizacion 8/10 seed=20860923 runtime=96964.482834 ms
+N=600 realizacion 9/10 seed=20860924 runtime=97100.085417 ms
+N=600 realizacion 10/10 seed=20860925 runtime=97460.6375 ms
+N=25: 10 corridas, media=12.0 ms, std=0.4 ms
+N=50: 10 corridas, media=32.0 ms, std=1.1 ms
+N=100: 10 corridas, media=158.5 ms, std=4.2 ms
+N=200: 10 corridas, media=1268.6 ms, std=35.1 ms
+N=300: 10 corridas, media=5829.0 ms, std=306.2 ms
+N=400: 10 corridas, media=18720.5 ms, std=299.3 ms
+N=500: 10 corridas, media=48387.0 ms, std=403.7 ms
+N=600: 10 corridas, media=97596.0 ms, std=417.0 ms
+/Users/mavualvarez/Documents/GitHub/SDS-TP3/output/experiment_1_1_hexagonal_plots/execution_time_hexagonal_20261006_003529.png
+input/config.json restaurado a su contenido original

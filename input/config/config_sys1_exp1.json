@@ -13,7 +13,7 @@
     "trajectoryDts": [0.005, 0.001]
   },
   "output": {
-    "directory": "output/system1",
+    "directory": "output/sys1_exp1",
     "overwrite": false
   }
 }

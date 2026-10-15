@@ -1,0 +1,33 @@
+{
+  "system": "circular_billiard",
+  "seed": 4101,
+  "integrationMethod": "verlet",
+  "simulation": {
+    "dt": 5e-05,
+    "totalTime": 10.0
+  },
+  "particles": {
+    "count": 700,
+    "radius": 0.0175,
+    "mass": 0.025,
+    "initialSpeed": 1.0
+  },
+  "domain": {
+    "radius": 0.51
+  },
+  "interaction": {
+    "springConstant": 10000.0
+  },
+  "obstacles": {
+    "enabled": true,
+    "x0": 0.0175
+  },
+  "initialCondition": {
+    "mode": "hexagonal"
+  },
+  "output": {
+    "directory": "output/sys2_exp1b_energy_check/single/seed_4101",
+    "overwrite": false,
+    "stateEverySteps": 200
+  }
+}

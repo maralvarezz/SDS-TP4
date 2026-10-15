@@ -1,0 +1,12 @@
+{
+  "system": "circular_billiard",
+  "seed": 1001,
+  "integrationMethod": "verlet",
+  "simulation": { "dt": 0.0001, "totalTime": 10.0 },
+  "particles": { "count": 300, "radius": 0.0175, "mass": 0.025, "initialSpeed": 1.0 },
+  "domain": { "radius": 0.51 },
+  "interaction": { "springConstant": 10000.0 },
+  "obstacles": { "enabled": false, "x0": 0.0175 },
+  "initialCondition": { "mode": "random" },
+  "output": { "directory": "output/sys2_exp1a/single/seed_1001", "overwrite": false, "stateEverySteps": 0 }
+}

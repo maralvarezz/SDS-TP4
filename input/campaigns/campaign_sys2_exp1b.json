@@ -1,0 +1,34 @@
+{
+  "name": "sys2_exp1b",
+  "template": "input/config/config_sys2_exp1b.json",
+  "outputRoot": "output/sys2_exp1b",
+  "seeds": [
+    4001,
+    4002,
+    4003,
+    4004,
+    4005,
+    4006,
+    4007,
+    4008,
+    4009,
+    4010
+  ],
+  "grid": {
+    "particles.count": [
+      25,
+      50,
+      100,
+      200,
+      300,
+      400,
+      500,
+      600,
+      700
+    ]
+  },
+  "derived": {
+    "initialCondition.mode": "'hexagonal' if {particles.count} >= 400 else 'random'"
+  },
+  "jobs": 1
+}
