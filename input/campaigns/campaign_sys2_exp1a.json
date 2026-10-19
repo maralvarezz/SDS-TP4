@@ -3,7 +3,7 @@
   "template": "input/config/config_sys2_exp1a.json",
   "outputRoot": "output/sys2_exp1a",
   "realizations": 3,
-  "baseSeed": 1001,
+  "baseSeed": 2001,
   "grid": {
     "simulation.dt": [
       0.002,

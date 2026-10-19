@@ -107,9 +107,13 @@ def main():
     for scale in ("lin", "log"):
         fig, ax = plt.subplots()
         for (name, (ns, mean, std, _)), mk in zip(series.items(), markers):
-            ax.errorbar(ns, mean, yerr=std, marker=mk, markersize=8, capsize=4, linestyle="-", linewidth=1, label=name)
+            ax.errorbar(ns, mean, yerr=std, marker=mk, markersize=5, capsize=4, elinewidth=1.5, capthick=1.5, linestyle="-", linewidth=1, label=name)
         ax.set_xscale("log")
         ax.set_yscale("log")
+        all_n = sorted(set().union(*[set(v[0].tolist()) for v in series.values()]))
+        ax.set_xticks(all_n)
+        ax.set_xticklabels([str(n) if n in (25, 50, 100, 200, 300, 500, 700) else "" for n in all_n])
+        ax.xaxis.set_minor_formatter(plt.NullFormatter())
         ax.grid(True, which="major", alpha=0.3)
         ax.set_xlabel("Cantidad de partículas")
         ax.set_ylabel("Tiempo de ejecución (s)")
@@ -145,7 +149,7 @@ def main():
             fig, ax = plt.subplots()
             vis = []
             for (name, (ns, mean, std, _)), mk in zip(series.items(), markers):
-                ax.errorbar(ns, mean, yerr=std, marker=mk, markersize=8, capsize=4,
+                ax.errorbar(ns, mean, yerr=std, marker=mk, markersize=5, capsize=4, elinewidth=1.5, capthick=1.5,
                             linestyle="-", linewidth=1, label=name)
                 vis += [m for n, m in zip(ns, mean) if x_lo <= n <= x_hi]
             ax.set_xscale("log")

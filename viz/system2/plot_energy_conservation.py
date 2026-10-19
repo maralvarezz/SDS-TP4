@@ -6,8 +6,11 @@ summary.txt (runtimeMilliseconds). La energia (cinetica + elastica) se calcula a
 
 Observable escalar (el sistema es conservativo y sin disipacion, luego toda variacion de E es error numerico):
   E_0           = E(t = 0)  (sin solapes iniciales: E_0 = N m v_0^2 / 2)
-  delta_max(dt) = max_t |E(t) - E_0| / E_0              (peor desviacion en toda la corrida)
-  delta_rms(dt) = sqrt( mean_t ((E(t) - E_0)/E_0)^2 )   (desviacion tipica sostenida)
+  delta_max(dt) = max_t |E(t) - E_0|                    (peor desviacion en toda la corrida, en J)
+  delta_rms(dt) = sqrt( mean_t (E(t) - E_0)^2 )         (desviacion tipica sostenida, en J)
+Son las mismas magnitudes (absolutas, en J) que la figura de |E(t) - E_0| vs tiempo, para que sean comparables,
+y se grafican solo para los dt de --show-dts (los mismos de la figura temporal); la tabla impresa incluye todos.
+La tolerancia (--tolerance, relativa) se dibuja como tolerancia * E_0.
 Se reporta media y desvio estandar entre seeds (corridas) para cada dt.
 
 Uso: python3 viz/system2/plot_energy_conservation.py output/sys2_exp1a --out-dir output/figures/2_1a
@@ -49,22 +52,11 @@ def dt_label(dt):
     return rf"dt = ${mant}10^{{{int(e)}}}$ s"
 
 
-def pick_run(runs, seed):
-    runs = sorted(runs, key=lambda x: x["seed"])
-    if seed is None:
-        return runs[0]
-    for r in runs:
-        if r["seed"] == seed:
-            return r
-    sys.exit(f"No hay corrida con semilla {seed} para dt={runs[0]['dt']}; semillas disponibles: {[r['seed'] for r in runs]}")
-
-
 def deltas(run):
-    e0 = run["e"][0]
-    rel = (run["e"] - e0) / e0
-    if not np.all(np.isfinite(rel)):
-        return np.inf, np.inf, rel
-    return np.max(np.abs(rel)), np.sqrt(np.mean(rel ** 2)), rel
+    dev = run["e"] - run["e"][0]   # desviacion absoluta (J)
+    if not np.all(np.isfinite(dev)):
+        return np.inf, np.inf, dev
+    return np.max(np.abs(dev)), np.sqrt(np.mean(dev ** 2)), dev
 
 
 def main():
@@ -72,8 +64,8 @@ def main():
     p.add_argument("root")
     p.add_argument("--out-dir", default="output/figures/2_1a")
     p.add_argument("--show-dts", type=float, nargs="*", help="dt cuyas series temporales se grafican")
-    p.add_argument("--seed", type=int, help="semilla cuya serie temporal se grafica (por defecto, la menor de cada dt)")
-    p.add_argument("--tolerance", type=float, help="linea horizontal de referencia para delta_max")
+    p.add_argument("--seed", type=int, help="semilla de la corrida cuya serie temporal se grafica (por defecto, la menor de cada dt)")
+    p.add_argument("--tolerance", type=float, help="tolerancia relativa (fraccion de E_0); se dibuja como linea horizontal tolerancia*E_0")
     args = p.parse_args()
 
     apply_style()
@@ -101,7 +93,12 @@ def main():
     # --- Fig 1: desviacion de la energia, |E(t) - E_0|, vs tiempo (escala log) (seed menor de cada dt) ---
     fig, ax = plt.subplots()
     for dt in show:
-        r = pick_run(by_dt[dt], args.seed)
+        cand = sorted(by_dt[dt], key=lambda x: x["seed"])
+        if args.seed is not None:
+            cand = [x for x in cand if x["seed"] == args.seed]
+            if not cand:
+                sys.exit(f"No hay corrida con semilla {args.seed} para dt = {dt:g}")
+        r = cand[0]
         ax.plot(r["t"], np.abs(r["e"] - r["e"][0]), linewidth=1.5, label=dt_label(dt))
     ax.set_yscale("log")
     ax.set_xlabel("Tiempo (s)")
@@ -112,19 +109,21 @@ def main():
     fig.savefig(out / "energy_abs_deviation_vs_time.png")
     plt.close(fig)
 
-    # --- Fig 2: observable escalar vs dt ---
-    finite = np.isfinite(stats[:, 1])
+    # --- Fig 2: observable escalar vs dt (solo los mismos dt que se muestran en la figura temporal) ---
+    in_show = np.array([any(abs(dt - d) <= 1e-9 * max(dt, d) for d in show) for dt in stats[:, 0]])
+    finite = np.isfinite(stats[:, 1]) & in_show
     fig, ax = plt.subplots()
-    ax.errorbar(stats[finite, 0], stats[finite, 1], yerr=stats[finite, 2], marker="o", markersize=8, capsize=4,
+    ax.errorbar(stats[finite, 0], stats[finite, 1], yerr=stats[finite, 2], marker="o", markersize=5, capsize=4, elinewidth=1.5, capthick=1.5,
                 linestyle="-", linewidth=1, label="Máxima")
-    ax.errorbar(stats[finite, 0], stats[finite, 3], yerr=stats[finite, 4], marker="s", markersize=8, capsize=4,
+    ax.errorbar(stats[finite, 0], stats[finite, 3], yerr=stats[finite, 4], marker="s", markersize=5, capsize=4, elinewidth=1.5, capthick=1.5,
                 linestyle="-", linewidth=1, label="Cuadrática media")
     if args.tolerance:
-        ax.axhline(args.tolerance, color="k", linestyle="--", linewidth=1)
+        e0 = np.mean([r["e"][0] for r in runs])
+        ax.axhline(args.tolerance * e0, color="k", linestyle="--", linewidth=1, label="Tolerancia")
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_xlabel("Paso temporal (s)")
-    ax.set_ylabel("Desviación relativa de la energía")
+    ax.set_ylabel("Desviación de la energía (J)")
     ax.legend()
     ax.grid(True, which="major", alpha=0.3)
     fig.savefig(out / "energy_deviation_vs_dt.png")

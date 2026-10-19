@@ -102,7 +102,6 @@ def main():
     mu, sd = mean_v.mean(axis=0), mean_v.std(axis=0, ddof=1) if len(runs) > 1 else np.zeros(len(t))
     fig, ax = plt.subplots()
     ax.plot(t, mu, linewidth=2, label="Simulación")
-    ax.fill_between(t, mu - sd, mu + sd, alpha=0.25)
     ax.axhline(mb_mean_speed(m, e0), color="k", linestyle="--", linewidth=1.5,
                label="Maxwell-Boltzmann con $k_BT = m v_0^2/2$")
     if args.t_start is not None:
@@ -165,8 +164,8 @@ def main():
     vv = np.linspace(1e-4, args.vmax, 400)
     fig, ax = plt.subplots()
     ax.errorbar(centers, y_mean, yerr=y_std, fmt="o", markersize=6, capsize=3, label="Simulación")
-    ax.plot(vv, mb_pdf(vv, m, k_mean), linewidth=2.5, label=f"Ajuste: $k_BT$ = {fmt_pm(k_mean, k_std)} J")
-    ax.plot(vv, mb_pdf(vv, m, e0), "k--", linewidth=1.5, label="$k_BT = m v_0^2/2$")
+    ax.plot(vv, mb_pdf(vv, m, k_mean), linewidth=2.5, label=f"Ajuste: $k_BT$ = {k_mean:.5f} J")
+    ax.plot(vv, mb_pdf(vv, m, e0), "k--", linewidth=1.5, label="Teórica")
     ax.set_xlabel("Rapidez (m/s)")
     ax.set_ylabel("$f(v)$ (s/m)")
     ax.legend()
