@@ -2,10 +2,8 @@
   "name": "sys2_exp1b_energy_check",
   "template": "input/config/config_sys2_exp1b_energy_check.json",
   "outputRoot": "output/sys2_exp1b_energy_check",
-  "seeds": [
-    4101,
-    4102
-  ],
+  "realizations": 2,
+  "baseSeed": 4101,
   "grid": {
     "simulation.dt": [
       0.0001,

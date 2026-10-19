@@ -8,6 +8,8 @@
 | `config/config_sys2_exp1b.json` y `campaigns/campaign_sys2_exp1b.json` | 2.1.b | obstaculos en contacto (x0=r), tf=30 s, dt=5e-5, N=25..700, 10 seeds (4001-4010), `jobs=1` para medir tiempo; modo `random` para N<400 y `hexagonal` para N>=400 |
 | `config/config_sys2_exp1b_energy_check.json` y `campaigns/campaign_sys2_exp1b_energy_check.json` | 2.1.b | verificacion de dt: N=700 hexagonal con obstaculos, dt en {1e-4, 5e-5, 2e-5}, T=10 s |
 | `config/config_sys2_exp3.json` y `campaigns/campaign_sys2_exp3.json` | 2.3 | N=100 sin obstaculos, tf=30 s, dt=5e-5, 10 seeds (7001-7010), estados cada 0.02 s |
+| `config/config_sys2_exp4.json` y `campaigns/campaign_sys2_exp4.json` | 2.4 | igual que 2.1.b (mismas seeds y modo de condicion inicial) pero tf=600 s y N=25..600; los primeros 30 s coinciden con 2.1.b |
+| `config/config_sys2_exp4b.json` y `campaigns/campaign_sys2_exp4b.json` | 2.4.b | mapa de calor (x0, N): N=50,200,300,400,500 x 9 valores de x0, 10 realizaciones, t_max segun N (100-450 s); las filas N=20 y N=100 se reutilizan de 2.2 y la columna x0=r de N=25-600 de 2.4 |
 | `config/config_sys2_exp2.json` | 2.2 | N=100, obstaculos, tmax=100 s (corrida unica de prueba) |
 | `config/config_sys2_animation.json` | animacion | N=100, x0=0.25, estados cada 100 pasos |
 
@@ -18,3 +20,5 @@ Convencion para los proximos: `config_sys2_exp1b.json` + `campaign_sys2_exp1b.js
 Cada corrida guarda en su carpeta de salida `config.json` (copia exacta de lo ejecutado) y cada campana
 guarda `campaign.json` y `template.json` en su `outputRoot`. Como `output/` esta en `.gitignore`,
 los archivos de `input/` son los que se versionan: commitear la config ANTES de correr.
+
+**Paso temporal fijo del Sistema 2: dt = 5e-5 s** en todos los experimentos (elegido en 2.1.a y verificado con N=700 + obstaculos). Unica excepcion: los barridos de dt de 2.1.a y del chequeo de energia, que lo varian a proposito.

@@ -2,9 +2,19 @@
   "name": "sys2_exp1a",
   "template": "input/config/config_sys2_exp1a.json",
   "outputRoot": "output/sys2_exp1a",
-  "seeds": [1001, 1002, 1003],
+  "realizations": 3,
+  "baseSeed": 1001,
   "grid": {
-    "simulation.dt": [0.002, 0.001, 0.0005, 0.0002, 0.0001, 0.00005, 0.00002, 0.00001]
+    "simulation.dt": [
+      0.002,
+      0.001,
+      0.0005,
+      0.0002,
+      0.0001,
+      5e-05,
+      2e-05,
+      1e-05
+    ]
   },
   "derived": {
     "output.stateEverySteps": "round(0.01/{simulation.dt})"

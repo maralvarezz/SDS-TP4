@@ -2,18 +2,8 @@
   "name": "sys2_exp3",
   "template": "input/config/config_sys2_exp3.json",
   "outputRoot": "output/sys2_exp3",
-  "seeds": [
-    7001,
-    7002,
-    7003,
-    7004,
-    7005,
-    7006,
-    7007,
-    7008,
-    7009,
-    7010
-  ],
+  "realizations": 10,
+  "baseSeed": 7001,
   "grid": {
     "particles.count": [
       100

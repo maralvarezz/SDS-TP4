@@ -2,18 +2,8 @@
   "name": "sys2_exp2_N20",
   "template": "input/config/config_sys2_exp2_N20.json",
   "outputRoot": "output/sys2_exp2_N20",
-  "seeds": [
-    6001,
-    6002,
-    6003,
-    6004,
-    6005,
-    6006,
-    6007,
-    6008,
-    6009,
-    6010
-  ],
+  "realizations": 50,
+  "baseSeed": 6001,
   "grid": {
     "obstacles.x0": [
       0.0175,

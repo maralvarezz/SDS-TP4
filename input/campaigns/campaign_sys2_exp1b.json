@@ -2,18 +2,8 @@
   "name": "sys2_exp1b",
   "template": "input/config/config_sys2_exp1b.json",
   "outputRoot": "output/sys2_exp1b",
-  "seeds": [
-    4001,
-    4002,
-    4003,
-    4004,
-    4005,
-    4006,
-    4007,
-    4008,
-    4009,
-    4010
-  ],
+  "realizations": 10,
+  "baseSeed": 4001,
   "grid": {
     "particles.count": [
       25,

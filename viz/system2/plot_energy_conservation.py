@@ -11,7 +11,7 @@ Observable escalar (el sistema es conservativo y sin disipacion, luego toda vari
 Se reporta media y desvio estandar entre seeds (corridas) para cada dt.
 
 Uso: python3 viz/system2/plot_energy_conservation.py output/sys2_exp1a --out-dir output/figures/2_1a
-        [--show-dts 0.002 0.0005 0.0001 0.00001] [--tolerance 1e-3]
+        [--show-dts 1e-5 5e-5 1e-4 5e-4] [--seed 1002] [--tolerance 1e-3]
 """
 import argparse
 import sys
@@ -42,6 +42,23 @@ def load_runs(root):
     return runs
 
 
+def dt_label(dt):
+    """Etiqueta con notacion 10^n: 'dt = 5 x 10^-5 s'."""
+    m, e = f"{dt:.0e}".split("e")
+    mant = "" if m == "1" else f"{m}\\times "
+    return rf"dt = ${mant}10^{{{int(e)}}}$ s"
+
+
+def pick_run(runs, seed):
+    runs = sorted(runs, key=lambda x: x["seed"])
+    if seed is None:
+        return runs[0]
+    for r in runs:
+        if r["seed"] == seed:
+            return r
+    sys.exit(f"No hay corrida con semilla {seed} para dt={runs[0]['dt']}; semillas disponibles: {[r['seed'] for r in runs]}")
+
+
 def deltas(run):
     e0 = run["e"][0]
     rel = (run["e"] - e0) / e0
@@ -55,6 +72,7 @@ def main():
     p.add_argument("root")
     p.add_argument("--out-dir", default="output/figures/2_1a")
     p.add_argument("--show-dts", type=float, nargs="*", help="dt cuyas series temporales se grafican")
+    p.add_argument("--seed", type=int, help="semilla cuya serie temporal se grafica (por defecto, la menor de cada dt)")
     p.add_argument("--tolerance", type=float, help="linea horizontal de referencia para delta_max")
     args = p.parse_args()
 
@@ -80,31 +98,21 @@ def main():
         print(f"{dt:10.1e} {len(dm):4d} {dm.mean():10.3e} ± {dm.std():9.2e} {dr.mean():10.3e} ± {dr.std():9.2e} {rt:12.2f}")
     stats = np.array(stats)
 
-    # --- Fig 1: energia total vs tiempo (seed menor de cada dt) ---
+    # --- Fig 1: desviacion de la energia, |E(t) - E_0|, vs tiempo (escala log) (seed menor de cada dt) ---
     fig, ax = plt.subplots()
     for dt in show:
-        r = sorted(by_dt[dt], key=lambda x: x["seed"])[0]
-        ax.plot(r["t"], r["e"], linewidth=1.5, label=f"dt = {dt:.0e} s")
-    ax.set_xlabel("Tiempo (s)")
-    ax.set_ylabel("Energía total (J)")
-    ax.legend()
-    fig.savefig(out / "energy_vs_time.png")
-    plt.close(fig)
-
-    # --- Fig 2: desviacion relativa vs tiempo ---
-    fig, ax = plt.subplots()
-    for dt in show:
-        r = sorted(by_dt[dt], key=lambda x: x["seed"])[0]
-        _, _, rel = deltas(r)
-        ax.plot(r["t"], np.abs(rel), linewidth=1.2, label=f"dt = {dt:.0e} s")
+        r = pick_run(by_dt[dt], args.seed)
+        ax.plot(r["t"], np.abs(r["e"] - r["e"][0]), linewidth=1.5, label=dt_label(dt))
     ax.set_yscale("log")
     ax.set_xlabel("Tiempo (s)")
-    ax.set_ylabel("Desviación relativa de la energía")
-    ax.legend()
-    fig.savefig(out / "energy_deviation_vs_time.png")
+    ax.set_ylabel("Desviación de la energía (J)")
+    lo, hi = ax.get_ylim()
+    ax.set_ylim(lo, hi * 10 ** 1.8)  # espacio libre arriba para la leyenda, dentro del grafico
+    ax.legend(loc="upper left", fontsize=15)
+    fig.savefig(out / "energy_abs_deviation_vs_time.png")
     plt.close(fig)
 
-    # --- Fig 3: observable escalar vs dt ---
+    # --- Fig 2: observable escalar vs dt ---
     finite = np.isfinite(stats[:, 1])
     fig, ax = plt.subplots()
     ax.errorbar(stats[finite, 0], stats[finite, 1], yerr=stats[finite, 2], marker="o", markersize=8, capsize=4,

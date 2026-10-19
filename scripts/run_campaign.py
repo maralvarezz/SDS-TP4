@@ -8,7 +8,7 @@ No contiene logica fisica ni de analisis. Cada corrida queda en
 
 Uso: python3 scripts/run_campaign.py input/campaigns/<campana>.json [--jobs N] [--dry-run] [--force]
 Formato de la campana (JSON):
-  name, template (config base), outputRoot, seeds [..], grid {"a.b.c": [valores]} (producto cartesiano),
+  name, template (config base), outputRoot, realizations (cantidad), baseSeed (la seed de la realizacion i es baseSeed+i), grid {"a.b.c": [valores]} (producto cartesiano),
   derived {"a.b.c": "expresion con {otra.clave}"} (opcional), jobs (opcional; usar 1 si se mide runtime).
 """
 import argparse
@@ -57,7 +57,7 @@ def build_runs(campaign):
     keys = list(grid)
     runs = []
     for values in itertools.product(*(grid[k] for k in keys)):
-        for seed in campaign["seeds"]:
+        for seed in range(campaign["baseSeed"], campaign["baseSeed"] + campaign["realizations"]):
             cfg = copy.deepcopy(template)
             for k, v in zip(keys, values):
                 set_path(cfg, k, v)
