@@ -10,7 +10,10 @@ Si una corrida no alcanza el umbral antes de t_max, ese tiempo "no esta alcanzad
 (la media sobre las que si lo alcanzan queda subestimada: se informa cuantas lo alcanzan). Tambien se grafica F_u(t_max).
 Media y desvio muestral (ddof = 1) entre realizaciones.
 
-Uso: python3 viz/system2/plot_t90_t100_vs_density.py output/sys2_exp1b --out-dir output/figures/sys2_exp4
+Se pueden pasar varias carpetas: para cada N se usa la corrida de la ULTIMA carpeta que lo contenga (permite alargar t_max
+solo para los N altos). Cada N conserva su propio t_max.
+
+Uso: python3 viz/system2/plot_t90_t100_vs_density.py output/sys2_exp4 output/sys2_exp4_long --out-dir output/figures/sys2_exp4
 """
 import argparse
 import math
@@ -71,22 +74,24 @@ def plot_series(ax, rho, rows, key, marker, label):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("root")
+    p.add_argument("roots", nargs="+")
     p.add_argument("--out-dir", default="output/figures/sys2_exp4")
     args = p.parse_args()
 
     apply_style()
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
-    by_n = load(args.root)
+    by_n = {}
+    for root in args.roots:
+        by_n.update(load(root))  # la ultima carpeta que contiene a N reemplaza a las anteriores
     ns = sorted(by_n)
     R = by_n[ns[0]][0]["R"]
-    tf = by_n[ns[0]][0]["tf"]
+    tfs = [by_n[n][0]["tf"] for n in ns]
     rho = [n / (math.pi * R ** 2) for n in ns]
 
     rows = []
-    print(f"R = {R} m, t_max = {tf:g} s\n")
-    print(f"{'N':>5} {'rho (1/m^2)':>12} {'runs':>5} | {'t90 alc.':>8} {'t90 media (s)':>14} {'sigma':>7} | {'t100 alc.':>9} {'t100 media (s)':>15} {'sigma':>7} | {'Fu(tmax)':>9} {'sigma':>7}")
+    print(f"R = {R} m\n")
+    print(f"{'N':>5} {'tmax (s)':>9} {'rho (1/m^2)':>12} {'runs':>5} | {'t90 alc.':>8} {'t90 media (s)':>14} {'sigma':>7} | {'t100 alc.':>9} {'t100 media (s)':>15} {'sigma':>7} | {'Fu(tmax)':>9} {'sigma':>7}")
     for n, r in zip(ns, rho):
         runs = by_n[n]
         row = {"runs": len(runs)}
@@ -96,13 +101,13 @@ def main():
         fm, fs, _ = mean_std([x["fu_end"] for x in runs])
         row["fu"] = {"mean": fm, "std": fs}
         rows.append(row)
-        print(f"{n:5d} {r:12.1f} {len(runs):5d} | {row['t90']['k']:3d}/{len(runs):<4d} {row['t90']['mean']:14.2f} {row['t90']['std']:7.2f} | "
+        print(f"{n:5d} {runs[0]['tf']:9.0f} {r:12.1f} {len(runs):5d} | {row['t90']['k']:3d}/{len(runs):<4d} {row['t90']['mean']:14.2f} {row['t90']['std']:7.2f} | "
               f"{row['t100']['k']:4d}/{len(runs):<4d} {row['t100']['mean']:15.2f} {row['t100']['std']:7.2f} | {fm:9.3f} {fs:7.3f}")
 
     fig, ax = plt.subplots()
     plot_series(ax, rho, rows, "t90", "o", "$t_{90}$")
     plot_series(ax, rho, rows, "t100", "s", "$t_{100}$")
-    ax.axhline(tf, color="k", linestyle="--", linewidth=1)
+    ax.set_yscale("log")
     ax.set_xlabel("Densidad (1/m$^2$)")
     ax.set_ylabel("Tiempo (s)")
     ax.legend()
@@ -118,7 +123,7 @@ def main():
     ax.set_ylim(0, 1.02)
     fig.savefig(out / "fu_tmax_vs_density.png")
     plt.close(fig)
-    print(f"\nLinea punteada de t90/t100: t_max = {tf:g} s. Marcador vacio: no todas las corridas alcanzan el umbral.")
+    print(f"\nMarcador vacio: no todas las corridas alcanzan el umbral.")
     print(f"Figuras en {out}/")
 
 

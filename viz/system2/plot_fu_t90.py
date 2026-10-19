@@ -35,7 +35,7 @@ def load(root):
             continue
         meta = read_meta(d)
         _, times = read_contacts(d)
-        by_x0[round(meta["x0"], 10)].append({"n": meta["n"], "tf": meta["tf"], "times": np.sort(times)})
+        by_x0[round(meta["x0"], 10)].append({"n": meta["n"], "tf": meta["tf"], "seed": meta["seed"], "times": np.sort(times)})
     if not by_x0:
         sys.exit(f"No hay corridas completas en {root}")
     return by_x0
@@ -82,7 +82,7 @@ def main():
     p.add_argument("--label", default="N = 100")
     p.add_argument("--compare-root")
     p.add_argument("--compare-label", default="N = 20")
-    p.add_argument("--dt-grid", type=float, default=0.1, help="paso de la grilla temporal de F_u(t) (s)")
+    p.add_argument("--seed", type=int, help="semilla de la corrida cuya F_u(t) se grafica (por defecto, la menor de cada x0)")
     args = p.parse_args()
 
     apply_style()
@@ -98,22 +98,28 @@ def main():
         summaries[name] = summarize(by_x0)
         print_table(name, summaries[name], tf)
 
-    # --- F_u(t) media +- sigma, un panel por dataset ---
+    # --- F_u(t) de UNA sola corrida (misma semilla para todos los x0); el resto de las realizaciones
+    # se usan para t90 vs x0 (media y desvio) ---
     for k, (name, by_x0) in enumerate(datasets.items()):
-        tf = next(iter(by_x0.values()))[0]["tf"]
-        grid = np.arange(0.0, tf + 1e-9, args.dt_grid)
         show = sorted(args.show_x0) if args.show_x0 else sorted(by_x0)
         fig, ax = plt.subplots()
         for x0 in show:
             key = min(by_x0, key=lambda v: abs(v - x0))
-            curves = np.array([fu_curve(r, grid) for r in by_x0[key]])
-            mean = curves.mean(axis=0)
-            std = curves.std(axis=0, ddof=1) if len(curves) > 1 else np.zeros_like(mean)
-            line, = ax.plot(grid, mean, linewidth=2, label=f"$x_0$ = {key:.4g} m")
-            ax.fill_between(grid, np.clip(mean - std, 0, 1), np.clip(mean + std, 0, 1), alpha=0.2, color=line.get_color())
+            runs = sorted(by_x0[key], key=lambda r: r["seed"])
+            if args.seed is None:
+                run = runs[0]
+            else:
+                run = next((r for r in runs if r["seed"] == args.seed), None)
+                if run is None:
+                    sys.exit(f"No hay corrida con semilla {args.seed} para x0={key} en {name}")
+            n, tf = run["n"], run["tf"]
+            t = np.concatenate(([0.0], run["times"], [tf]))
+            fu = np.concatenate(([0.0], np.arange(1, len(run["times"]) + 1) / n, [len(run["times"]) / n]))
+            ax.step(t, fu, where="post", linewidth=2, label=f"$x_0$ = {key:.4g} m")
+            print(f"F_u(t) {name}: x0 = {key:.4g} m, semilla {run['seed']}")
         ax.axhline(THRESHOLD, color="k", linestyle="--", linewidth=1)
         ax.set_xlabel("Tiempo (s)")
-        ax.set_ylabel("Fracción de partículas usadas")
+        ax.set_ylabel("$F_u$ (partículas)")
         ax.set_ylim(0, 1.02)
         ax.legend(loc="lower right")
         fig.savefig(out / f"fu_vs_time_{k}.png")
@@ -131,7 +137,7 @@ def main():
                         marker=mk, markersize=8, capsize=4, linestyle="none", markerfacecolor="white",
                         color=line[0].get_color(), label=f"{name} (no todas alcanzan)")
     ax.set_xlabel("$x_0$ (m)")
-    ax.set_ylabel("Tiempo $t_{90}$ (s)")
+    ax.set_ylabel("$t_{90}$ (s)")
     ax.legend()
     fig.savefig(out / "t90_vs_x0.png")
     plt.close(fig)

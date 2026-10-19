@@ -2,7 +2,7 @@
   "name": "sys2_exp3",
   "template": "input/config/config_sys2_exp3.json",
   "outputRoot": "output/sys2_exp3",
-  "realizations": 10,
+  "realizations": 50,
   "baseSeed": 7001,
   "grid": {
     "particles.count": [

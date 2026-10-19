@@ -13,9 +13,12 @@ muestral (ddof = 1) entre realizaciones; la curva E(kBT) mostrada es la del hist
 Referencia (no es un ajuste): kBT = m v0^2 / 2 = energia cinetica inicial por particula.
 
 El estado estacionario se elige a mano: primero correr SIN --t-start para ver <v>(t); luego repetir con --t-start.
+Con --t-start se ajusta k_BT en el estacionario y se grafica, para cada instante de --times, el histograma de f(v) (todas las
+realizaciones juntas, en el instante guardado mas cercano) junto a la curva de Maxwell-Boltzmann ajustada (media y desvio muestral entre realizaciones): se ve como la
+distribucion parte lejos de la curva (t = 0: todas con |v| = v0) y se va pareciendo a ella.
 
 Uso: python3 viz/system2/plot_speed_distribution.py output/sys2_exp3 --out-dir output/figures/sys2_exp3
-        [--t-start 5] [--windows 0 0.1 0.5 2] [--window-width 0.2] [--bins 40] [--vmax 3]
+        [--t-start 2] [--times 0 0.1 0.3 1 3 10] [--bins 40] [--vmax 3]
 """
 import argparse
 import math
@@ -76,8 +79,8 @@ def main():
     p.add_argument("root")
     p.add_argument("--out-dir", default="output/figures/sys2_exp3")
     p.add_argument("--t-start", type=float, help="inicio del estado estacionario (s); se elige mirando <v>(t)")
-    p.add_argument("--windows", type=float, nargs="*", default=[0.0, 0.1, 0.5, 2.0], help="inicios de ventana para f(v,t)")
-    p.add_argument("--window-width", type=float, default=0.2)
+    p.add_argument("--times", type=float, nargs="*", default=[0.0, 0.1, 0.3, 1.0, 3.0, 10.0],
+                   help="instantes (s) para los que se grafica f(v) junto a la curva ajustada")
     p.add_argument("--bins", type=int, default=40)
     p.add_argument("--vmax", type=float, default=3.0)
     args = p.parse_args()
@@ -110,20 +113,6 @@ def main():
     fig.savefig(out / "mean_speed_vs_time.png")
     plt.close(fig)
 
-    # --- f(v) en ventanas temporales (todas las realizaciones juntas) ---
-    fig, ax = plt.subplots()
-    for w0 in args.windows:
-        sel = (t >= w0) & (t < w0 + args.window_width)
-        if not sel.any():
-            continue
-        speeds = np.concatenate([r["v"][sel].ravel() for r in runs])
-        ax.step(centers, histogram_pdf(speeds, edges), where="mid", linewidth=2, label=f"$t \\in [{w0:g}, {w0 + args.window_width:g})$ s")
-    ax.set_xlabel("Rapidez (m/s)")
-    ax.set_ylabel("$f(v)$ (s/m)")
-    ax.legend()
-    fig.savefig(out / "fv_evolution.png")
-    plt.close(fig)
-
     if args.t_start is None:
         print("\nElegir el inicio del estado estacionario mirando mean_speed_vs_time.png y repetir con --t-start <s>.")
         print(f"Figuras en {out}/")
@@ -150,6 +139,28 @@ def main():
     print(f"kBT (media ± sigma entre realizaciones) = {fmt_pm(k_mean, k_std)} J")
     print(f"kBT del histograma promedio = {k_pool:.5f} J   |  m v0^2/2 = {e0:.5f} J  |  cociente kBT/(m v0^2/2) = {k_mean / e0:.3f}")
     print(f"<v> medida en el estacionario = {mean_v[:, sel].mean():.4f} m/s  |  <v> MB ajustado = {mb_mean_speed(m, k_mean):.4f} m/s")
+
+    # --- evolucion temporal: f(v) en cada instante vs la curva de Maxwell-Boltzmann ajustada (misma curva en todos) ---
+    vv = np.linspace(1e-4, args.vmax, 400)
+    mb_curve = mb_pdf(vv, m, k_mean)
+    y_common = 1.6 * mb_curve.max()
+    for tt in args.times:
+        i = int(np.argmin(np.abs(t - tt)))
+        # histograma de cada realizacion en el instante t (N muestras); barras = media, barras de error = desvio muestral
+        ys_t = np.array([histogram_pdf(r["v"][i], edges) for r in runs])
+        y = ys_t.mean(axis=0)
+        y_sd = ys_t.std(axis=0, ddof=1) if len(runs) > 1 else np.zeros_like(y)
+        fig, ax = plt.subplots()
+        ax.bar(centers, y, width=np.diff(edges), yerr=y_sd, capsize=3, alpha=0.6, color="tab:blue",
+               error_kw={"elinewidth": 1.2, "ecolor": "k"}, label="Simulación")
+        ax.plot(vv, mb_curve, color="tab:red", linewidth=2.5, label="Maxwell-Boltzmann")
+        ax.set_ylim(0, max(y_common, 1.05 * (y + y_sd).max()))
+        ax.set_xlabel("Rapidez (m/s)")
+        ax.set_ylabel("$f(v)$ (s/m)")
+        ax.legend(title=f"$t$ = {t[i]:g} s", loc="upper right")
+        fig.savefig(out / (f"fv_t_{t[i]:.2f}".replace(".", "p") + ".png"))
+        plt.close(fig)
+        print(f"f(v) en t = {t[i]:.2f} s: {len(runs)} realizaciones x {n} particulas")
 
     vv = np.linspace(1e-4, args.vmax, 400)
     fig, ax = plt.subplots()

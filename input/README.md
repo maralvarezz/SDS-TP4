@@ -7,8 +7,9 @@
 | `campaigns/campaign_sys2_exp1a.json` | 2.1.a | barrido de dt x seeds sobre la plantilla anterior |
 | `config/config_sys2_exp1b.json` y `campaigns/campaign_sys2_exp1b.json` | 2.1.b | obstaculos en contacto (x0=r), tf=30 s, dt=5e-5, N=25..700, 10 seeds (4001-4010), `jobs=1` para medir tiempo; modo `random` para N<400 y `hexagonal` para N>=400 |
 | `config/config_sys2_exp1b_energy_check.json` y `campaigns/campaign_sys2_exp1b_energy_check.json` | 2.1.b | verificacion de dt: N=700 hexagonal con obstaculos, dt en {1e-4, 5e-5, 2e-5}, T=10 s |
-| `config/config_sys2_exp3.json` y `campaigns/campaign_sys2_exp3.json` | 2.3 | N=100 sin obstaculos, tf=30 s, dt=5e-5, 10 seeds (7001-7010), estados cada 0.02 s |
+| `config/config_sys2_exp3.json` y `campaigns/campaign_sys2_exp3.json` | 2.3 | N=100 sin obstaculos, tf=30 s, dt=5e-5, 50 seeds (7001-7050), estados cada 0.02 s |
 | `config/config_sys2_exp4.json` y `campaigns/campaign_sys2_exp4.json` | 2.4 | igual que 2.1.b (mismas seeds y modo de condicion inicial) pero tf=600 s y N=25..600; los primeros 30 s coinciden con 2.1.b |
+| `config/config_sys2_exp4_long.json` y `campaigns/campaign_sys2_exp4_long.json` | 2.4 | N=500 y 600 con t_max mayor para alcanzar t90/t100: 1200 s (N=500) y 2500 s (N=600); N=700 de 2.1.b se omite; mismas seeds 4001-4010. Reemplaza a los N=500 y 600 de `sys2_exp4` (t_max = 600 s), que quedan censurados |
 | `config/config_sys2_exp4b.json` y `campaigns/campaign_sys2_exp4b.json` | 2.4.b | mapa de calor (x0, N): N=50,200,300,400,500 x 9 valores de x0, 10 realizaciones, t_max segun N (100-450 s); las filas N=20 y N=100 se reutilizan de 2.2 y la columna x0=r de N=25-600 de 2.4 |
 | `config/config_sys2_exp2.json` | 2.2 | N=100, obstaculos, tmax=100 s (corrida unica de prueba) |
 | `config/config_sys2_animation.json` | animacion | N=100, x0=0.25, estados cada 100 pasos |

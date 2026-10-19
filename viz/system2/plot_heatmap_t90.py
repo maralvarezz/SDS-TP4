@@ -56,6 +56,7 @@ def main():
     p.add_argument("--out-dir", default="output/figures/sys2_exp4b")
     p.add_argument("--metric", choices=["t90", "t100"], default="t90")
     p.add_argument("--n-values", type=int, nargs="*")
+    p.add_argument("--x0-values", type=float, nargs="*", help="x0 (m) a incluir; por defecto todos")
     p.add_argument("--annotate", action="store_true", help="escribir el valor medio en cada celda")
     args = p.parse_args()
 
@@ -67,6 +68,8 @@ def main():
     if args.n_values:
         ns = [n for n in ns if n in args.n_values]
     x0s = sorted({x for n, x in cells if n in ns})
+    if args.x0_values:
+        x0s = [x for x in x0s if any(abs(x - v) < 1e-9 for v in args.x0_values)]
 
     mean = np.full((len(ns), len(x0s)), np.nan)
     reached = np.zeros((len(ns), len(x0s)), int)
@@ -81,7 +84,8 @@ def main():
                 mean[i, j] = vals[ok].mean()
 
     print(f"\nMetrica: <{args.metric}> (s). Celda = media sobre corridas que alcanzan el umbral; 'k/n' = alcanzan/total\n")
-    print(f"{'N \\ x0':>8} " + " ".join(f"{x:>11.4f}" for x in x0s))
+    header = "N \\ x0"
+    print(f"{header:>8} " + " ".join(f"{x:>11.4f}" for x in x0s))
     for i, n in enumerate(ns):
         cellstr = []
         for j in range(len(x0s)):
@@ -116,6 +120,11 @@ def main():
     ax.set_xlabel("$x_0$ (m)")
     ax.set_ylabel("Cantidad de partículas")
     cb = fig.colorbar(im, ax=ax)
+    ticks = [t for t in (10, 20, 50, 100, 200, 500, 1000) if vmin <= t <= vmax]
+    if ticks:
+        cb.set_ticks(ticks)
+        cb.set_ticklabels([str(t) for t in ticks])
+        cb.ax.minorticks_off()
     cb.set_label(f"Tiempo ${args.metric[0]}_{{{args.metric[1:]}}}$ medio (s)")
     fig.savefig(out / f"heatmap_{args.metric}.png")
     plt.close(fig)
