@@ -100,8 +100,8 @@ def main():
               f"{row['t100']['k']:4d}/{len(runs):<4d} {row['t100']['mean']:15.2f} {row['t100']['std']:7.2f} | {fm:9.3f} {fs:7.3f}")
 
     fig, ax = plt.subplots()
-    plot_series(ax, rho, rows, "t90", "o", "$t_{90}$")
-    plot_series(ax, rho, rows, "t100", "s", "$t_{100}$")
+    plot_series(ax, rho, rows, "t90", "o", r"$\langle t_{90}\rangle$")
+    plot_series(ax, rho, rows, "t100", "s", r"$\langle t_{100}\rangle$")
     ax.set_yscale("log")
     ax.set_xlabel("Densidad (1/m$^2$)")
     ax.set_ylabel("Tiempo (s)")

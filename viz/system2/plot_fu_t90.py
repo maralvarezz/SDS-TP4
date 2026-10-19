@@ -137,7 +137,7 @@ def main():
                         marker=mk, markersize=8, capsize=4, linestyle="none", markerfacecolor="white",
                         color=line[0].get_color(), label=f"{name} (no todas alcanzan)")
     ax.set_xlabel("$x_0$ (m)")
-    ax.set_ylabel("$t_{90}$ (s)")
+    ax.set_ylabel(r"$\langle t_{90}\rangle$ (s)")
     ax.legend()
     fig.savefig(out / "t90_vs_x0.png")
     plt.close(fig)

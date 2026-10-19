@@ -169,20 +169,18 @@ def main():
     fig.savefig(out / "fv_steady_fit.png")
     plt.close(fig)
 
-    # Error del ajuste E(c) (Teorica 0, diapositiva 70): escala lineal y ventana alrededor del minimo c*,
-    # con lineas que bajan de E(c*) a los ejes.
+    # Error del ajuste E(c) (Teorica 0, diapositiva 70): E_i(c) = sum_j [y_ij - f(v_j; c)]^2 de cada realizacion i,
+    # promediado sobre las realizaciones. Tiene el mismo minimo c* que el ajuste sobre el promedio de las y
+    # (difiere solo en una constante: la varianza entre realizaciones), y E(c*) > 0 por el ruido estadistico.
+    err_runs = np.mean([fit_kbt(centers, y, m, grid)[1] for y in ys], axis=0)
     win = (grid >= 0.7 * k_pool) & (grid <= 1.3 * k_pool)
-    e_min = err_pool.min()
+    i_min = int(np.argmin(err_runs))
+    print(f"E(c*) promedio sobre realizaciones = {err_runs[i_min]:.3e} s^2/m^2 en kBT = {grid[i_min]:.5f} J")
     fig, ax = plt.subplots()
-    ax.plot(grid[win], err_pool[win], linewidth=2.5, color="tab:blue")
-    ax.plot([k_pool], [e_min], "o", markersize=9, color="tab:orange", zorder=5, clip_on=False)
-    ax.vlines(k_pool, 0, e_min, color="k", linestyle=":", linewidth=1.5)
-    ax.hlines(e_min, grid[win].min(), k_pool, color="k", linestyle=":", linewidth=1.5)
+    ax.plot(grid[win], err_runs[win], linewidth=2.5, color="tab:blue")
+    ax.plot([grid[i_min]], [err_runs[i_min]], "o", markersize=9, color="tab:orange", zorder=5)
     ax.set_xlim(grid[win].min(), grid[win].max())
-    ax.set_ylim(0, err_pool[win].max() * 1.05)
-    ticks = [t for t in ax.get_xticks() if grid[win].min() <= t <= grid[win].max() and abs(t - k_pool) > 0.06 * k_pool]
-    ax.set_xticks(ticks + [k_pool])
-    ax.set_xticklabels([f"{t:.3f}" for t in ticks] + [f"{k_pool:.4f}"])
+    ax.set_ylim(0, err_runs[win].max() * 1.05)
     ax.set_xlabel("$k_BT$ (J)")
     ax.set_ylabel("Error $E(k_BT)$ (s$^2$/m$^2$)")
     fig.savefig(out / "fit_error.png")

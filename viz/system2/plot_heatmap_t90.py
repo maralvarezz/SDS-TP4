@@ -130,7 +130,7 @@ def main():
         cb.set_ticks(ticks)
         cb.set_ticklabels([str(t) for t in ticks])
         cb.ax.minorticks_off()
-    cb.set_label(f"Tiempo ${args.metric[0]}_{{{args.metric[1:]}}}$ medio (s)")
+    cb.set_label("Tiempo medio $\\langle %s_{%s}\\rangle$ (s)" % (args.metric[0], args.metric[1:]))
     fig.savefig(out / f"heatmap_{args.metric}.png")
     plt.close(fig)
     print(f"\nFigura en {out}/heatmap_{args.metric}.png  (punto: x0 de menor tiempo en cada fila; rayado: no todas alcanzan el umbral; gris: ninguna)")
