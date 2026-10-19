@@ -1,0 +1,27 @@
+{
+  "name": "sys2_exp4c_n",
+  "template": "input/config/config_sys2_exp4b.json",
+  "outputRoot": "output/sys2_exp4c_n",
+  "realizations": 10,
+  "baseSeed": 9501,
+  "grid": {
+    "particles.count": [
+      150,
+      250
+    ],
+    "obstacles.x0": [
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45
+    ]
+  },
+  "derived": {
+    "simulation.totalTime": "100.0 if {particles.count} <= 50 else (150.0 if {particles.count} <= 200 else (250.0 if {particles.count} <= 300 else 400.0))"
+  },
+  "jobs": 10
+}

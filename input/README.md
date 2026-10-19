@@ -23,3 +23,4 @@ guarda `campaign.json` y `template.json` en su `outputRoot`. Como `output/` esta
 los archivos de `input/` son los que se versionan: commitear la config ANTES de correr.
 
 **Paso temporal fijo del Sistema 2: dt = 5e-5 s** en todos los experimentos (elegido en 2.1.a y verificado con N=700 + obstaculos). Unica excepcion: los barridos de dt de 2.1.a y del chequeo de energia, que lo varian a proposito.
+| `campaigns/campaign_sys2_exp4c_x005.json`, `campaigns/campaign_sys2_exp4c_n.json` | 2.4.b | completan la grilla N=50,100,150,200,250,300 x x0=0.05..0.45 (paso 0.05): columna x0=0.05 y filas N=150, 250; 10 realizaciones c/u |

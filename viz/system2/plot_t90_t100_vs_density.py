@@ -65,11 +65,6 @@ def plot_series(ax, rho, rows, key, marker, label):
     if full:
         line = ax.errorbar([r for r, _ in full], [s[key]["mean"] for _, s in full], yerr=[s[key]["std"] for _, s in full],
                            marker=marker, markersize=8, capsize=4, linestyle="-", linewidth=1, label=label)
-    if part:
-        color = line[0].get_color() if line else None
-        ax.errorbar([r for r, _ in part], [s[key]["mean"] for _, s in part], yerr=[s[key]["std"] for _, s in part],
-                    marker=marker, markersize=8, capsize=4, linestyle="none", markerfacecolor="white", color=color,
-                    label=None if line else label)
 
 
 def main():
@@ -123,7 +118,6 @@ def main():
     ax.set_ylim(0, 1.02)
     fig.savefig(out / "fu_tmax_vs_density.png")
     plt.close(fig)
-    print(f"\nMarcador vacio: no todas las corridas alcanzan el umbral.")
     print(f"Figuras en {out}/")
 
 

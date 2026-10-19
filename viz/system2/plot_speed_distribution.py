@@ -102,8 +102,6 @@ def main():
     mu, sd = mean_v.mean(axis=0), mean_v.std(axis=0, ddof=1) if len(runs) > 1 else np.zeros(len(t))
     fig, ax = plt.subplots()
     ax.plot(t, mu, linewidth=2, label="Simulación")
-    ax.axhline(mb_mean_speed(m, e0), color="k", linestyle="--", linewidth=1.5,
-               label="Maxwell-Boltzmann con $k_BT = m v_0^2/2$")
     if args.t_start is not None:
         ax.axvline(args.t_start, color="tab:red", linestyle=":", linewidth=2, label="Inicio del estacionario")
     ax.set_xlabel("Tiempo (s)")
@@ -164,19 +162,27 @@ def main():
     vv = np.linspace(1e-4, args.vmax, 400)
     fig, ax = plt.subplots()
     ax.errorbar(centers, y_mean, yerr=y_std, fmt="o", markersize=6, capsize=3, label="Simulación")
-    ax.plot(vv, mb_pdf(vv, m, k_mean), linewidth=2.5, label=f"Ajuste: $k_BT$ = {k_mean:.5f} J")
-    ax.plot(vv, mb_pdf(vv, m, e0), "k--", linewidth=1.5, label="Teórica")
+    ax.plot(vv, mb_pdf(vv, m, k_mean), linewidth=2.5, label="Ajuste")
     ax.set_xlabel("Rapidez (m/s)")
     ax.set_ylabel("$f(v)$ (s/m)")
     ax.legend()
     fig.savefig(out / "fv_steady_fit.png")
     plt.close(fig)
 
+    # Error del ajuste E(c) (Teorica 0, diapositiva 70): escala lineal y ventana alrededor del minimo c*,
+    # con lineas que bajan de E(c*) a los ejes.
+    win = (grid >= 0.7 * k_pool) & (grid <= 1.3 * k_pool)
+    e_min = err_pool.min()
     fig, ax = plt.subplots()
-    ax.plot(grid, err_pool, linewidth=2)
-    ax.plot([k_pool], [err_pool.min()], "o", markersize=9)
-    ax.axvline(e0, color="k", linestyle="--", linewidth=1.5)
-    ax.set_yscale("log")
+    ax.plot(grid[win], err_pool[win], linewidth=2.5, color="tab:blue")
+    ax.plot([k_pool], [e_min], "o", markersize=9, color="tab:orange", zorder=5, clip_on=False)
+    ax.vlines(k_pool, 0, e_min, color="k", linestyle=":", linewidth=1.5)
+    ax.hlines(e_min, grid[win].min(), k_pool, color="k", linestyle=":", linewidth=1.5)
+    ax.set_xlim(grid[win].min(), grid[win].max())
+    ax.set_ylim(0, err_pool[win].max() * 1.05)
+    ticks = [t for t in ax.get_xticks() if grid[win].min() <= t <= grid[win].max() and abs(t - k_pool) > 0.06 * k_pool]
+    ax.set_xticks(ticks + [k_pool])
+    ax.set_xticklabels([f"{t:.3f}" for t in ticks] + [f"{k_pool:.4f}"])
     ax.set_xlabel("$k_BT$ (J)")
     ax.set_ylabel("Error $E(k_BT)$ (s$^2$/m$^2$)")
     fig.savefig(out / "fit_error.png")

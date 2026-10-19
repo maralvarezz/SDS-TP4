@@ -113,6 +113,11 @@ def main():
                 ax.add_patch(plt.Rectangle((j, i), 1, 1, fill=False, hatch="//", edgecolor="white", linewidth=0))
             if args.annotate and reached[i, j]:
                 ax.text(j + 0.5, i + 0.5, f"{mean[i, j]:.0f}", ha="center", va="center", fontsize=14, color="white")
+    # mejor x0 de cada fila: el que minimiza el tiempo medio
+    for i in range(len(ns)):
+        if np.isfinite(mean[i]).any():
+            j = int(np.nanargmin(mean[i]))
+            ax.plot(j + 0.5, i + 0.5, marker="o", markersize=14, color="white", markeredgecolor="black", markeredgewidth=1.5)
     ax.set_xticks(np.arange(len(x0s)) + 0.5)
     ax.set_xticklabels([f"{x:.4g}" for x in x0s], rotation=45)
     ax.set_yticks(np.arange(len(ns)) + 0.5)
@@ -128,7 +133,7 @@ def main():
     cb.set_label(f"Tiempo ${args.metric[0]}_{{{args.metric[1:]}}}$ medio (s)")
     fig.savefig(out / f"heatmap_{args.metric}.png")
     plt.close(fig)
-    print(f"\nFigura en {out}/heatmap_{args.metric}.png  (rayado: no todas las corridas alcanzan el umbral; gris: ninguna)")
+    print(f"\nFigura en {out}/heatmap_{args.metric}.png  (punto: x0 de menor tiempo en cada fila; rayado: no todas alcanzan el umbral; gris: ninguna)")
 
 
 if __name__ == "__main__":
