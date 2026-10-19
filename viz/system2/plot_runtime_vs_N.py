@@ -108,15 +108,66 @@ def main():
         fig, ax = plt.subplots()
         for (name, (ns, mean, std, _)), mk in zip(series.items(), markers):
             ax.errorbar(ns, mean, yerr=std, marker=mk, markersize=8, capsize=4, linestyle="-", linewidth=1, label=name)
-        if scale == "log":
-            ax.set_xscale("log")
-            ax.set_yscale("log")
-            ax.grid(True, which="major", alpha=0.3)
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.grid(True, which="major", alpha=0.3)
         ax.set_xlabel("Cantidad de partículas")
         ax.set_ylabel("Tiempo de ejecución (s)")
         ax.legend()
         fig.savefig(out / f"runtime_vs_N_{scale}.png")
         plt.close(fig)
+
+    # Zoom en el cruce TP4 / TP3. El cruce se estima suponiendo que, entre dos N medidos consecutivos, log T es lineal
+    # en log N (es decir, las rectas que se ven en la escala log-log) y resolviendo la interseccion de ambas rectas.
+    if len(series) == 2:
+        (n4, m4, s4, _), (n3, m3, s3, _) = series.values()
+        common = sorted(set(n4.tolist()) & set(n3.tolist()))
+        i4 = {n: i for i, n in enumerate(n4.tolist())}
+        i3 = {n: i for i, n in enumerate(n3.tolist())}
+        cross = None
+        for a, b in zip(common[:-1], common[1:]):
+            la, lb = np.log(a), np.log(b)
+            d_a = np.log(m4[i4[a]]) - np.log(m3[i3[a]])
+            d_b = np.log(m4[i4[b]]) - np.log(m3[i3[b]])
+            if d_a * d_b < 0:  # cambia el signo de log(T4/T3): hay cruce en [a, b]
+                f = d_a / (d_a - d_b)
+                ln_star = la + f * (lb - la)
+                t_star = np.exp(np.log(m4[i4[a]]) + f * (np.log(m4[i4[b]]) - np.log(m4[i4[a]])))
+                cross = (a, b, np.exp(ln_star), t_star)
+                break
+        if cross:
+            a, b, n_star, t_star = cross
+            print(f"\nCruce TP4/TP3 entre N={a} y N={b}: N* = {n_star:.0f}, T* = {t_star:.2f} s (interpolacion log-log)")
+            # zoom moderado: un N medido antes y uno despues del par que enmarca el cruce, con algo de margen
+            k = common.index(a)
+            x_lo = common[max(k - 1, 0)] * 0.7
+            x_hi = common[min(k + 2, len(common) - 1)] * 1.085
+            fig, ax = plt.subplots()
+            vis = []
+            for (name, (ns, mean, std, _)), mk in zip(series.items(), markers):
+                ax.errorbar(ns, mean, yerr=std, marker=mk, markersize=8, capsize=4,
+                            linestyle="-", linewidth=1, label=name)
+                vis += [m for n, m in zip(ns, mean) if x_lo <= n <= x_hi]
+            ax.set_xscale("log")
+            ax.set_yscale("log")
+            ax.set_xlim(x_lo, x_hi)
+            y_lo = min(vis) * 0.25
+            ax.set_ylim(y_lo, max(vis) * 0.8)
+            # punto de cruce y linea punteada que baja hasta el eje x, donde se rotula su valor
+            ax.vlines(n_star, y_lo, t_star, color="k", linestyle=":", linewidth=1.5, zorder=4)
+            ax.plot([n_star], [t_star], marker="o", markersize=9, color="k", linestyle="none", zorder=5)
+            ticks = [n for n in common if x_lo <= n <= x_hi] + [n_star]
+            ax.set_xticks(ticks)
+            ax.set_xticklabels([f"{n_star:.0f}" if n == n_star else str(n) for n in ticks])
+            ax.xaxis.set_minor_formatter(plt.NullFormatter())
+            ax.grid(True, which="major", alpha=0.3)
+            ax.set_xlabel("Cantidad de partículas")
+            ax.set_ylabel("Tiempo de ejecución (s)")
+            ax.legend(loc="upper left", fontsize=15)
+            fig.savefig(out / "runtime_vs_N_zoom_cruce.png")
+            plt.close(fig)
+        else:
+            print("\nAviso: las curvas TP4 y TP3 no se cruzan en el rango medido; no se genera el zoom.")
 
     # Costo por paso y por particula: t_c = T / (pasos * N). Si el costo fuera exactamente lineal en N seria constante.
     ns, mean, std, _ = series[args.label_tp4]
