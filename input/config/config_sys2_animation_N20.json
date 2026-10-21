@@ -1,0 +1,33 @@
+{
+  "system": "circular_billiard",
+  "seed": 5101,
+  "integrationMethod": "verlet",
+  "simulation": {
+    "dt": 5e-05,
+    "totalTime": 40.0
+  },
+  "particles": {
+    "count": 20,
+    "radius": 0.0175,
+    "mass": 0.025,
+    "initialSpeed": 1.0
+  },
+  "domain": {
+    "radius": 0.51
+  },
+  "interaction": {
+    "springConstant": 10000.0
+  },
+  "obstacles": {
+    "enabled": true,
+    "x0": 0.25
+  },
+  "initialCondition": {
+    "mode": "random"
+  },
+  "output": {
+    "directory": "output/sys2_animation/N20_x0_0.25/seed_5101",
+    "overwrite": false,
+    "stateEverySteps": 200
+  }
+}

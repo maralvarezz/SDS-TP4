@@ -12,7 +12,8 @@
 | `config/config_sys2_exp4_long.json` y `campaigns/campaign_sys2_exp4_long.json` | 2.4 | N=500 y 600 con t_max mayor para alcanzar t90/t100: 1200 s (N=500) y 2500 s (N=600); N=700 de 2.1.b se omite; mismas seeds 4001-4010. Reemplaza a los N=500 y 600 de `sys2_exp4` (t_max = 600 s), que quedan censurados |
 | `config/config_sys2_exp4b.json` y `campaigns/campaign_sys2_exp4b.json` | 2.4.b | mapa de calor (x0, N): N=50,200,300,400,500 x 9 valores de x0, 10 realizaciones, t_max segun N (100-450 s); las filas N=20 y N=100 se reutilizan de 2.2 y la columna x0=r de N=25-600 de 2.4 |
 | `config/config_sys2_exp2.json` | 2.2 | N=100, obstaculos, tmax=100 s (corrida unica de prueba) |
-| `config/config_sys2_animation.json` | animacion | N=100, x0=0.25, estados cada 100 pasos |
+| `config/config_sys2_animation.json` | animacion | N=100, x0=0.25, estados cada 200 pasos |
+| `config/config_sys2_animation_N20.json` | animacion | N=20, x0=0.25, estados cada 200 pasos |
 
 Los `contacts.txt` de 2.1.b se reutilizan para 2.4 (t90, t100 vs densidad).
 
