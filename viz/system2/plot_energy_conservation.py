@@ -65,6 +65,7 @@ def main():
     p.add_argument("--out-dir", default="output/figures/2_1a")
     p.add_argument("--show-dts", type=float, nargs="*", help="dt cuyas series temporales se grafican")
     p.add_argument("--seed", type=int, help="semilla de la corrida cuya serie temporal se grafica (por defecto, la menor de cada dt)")
+    p.add_argument("--max-only", action="store_true", help="en la figura de desviacion vs dt, graficar solo la desviacion maxima")
     p.add_argument("--tolerance", type=float, help="tolerancia relativa (fraccion de E_0); se dibuja como linea horizontal tolerancia*E_0")
     args = p.parse_args()
 
@@ -115,8 +116,9 @@ def main():
     fig, ax = plt.subplots()
     ax.errorbar(stats[finite, 0], stats[finite, 1], yerr=stats[finite, 2], marker="o", markersize=5, capsize=4, elinewidth=1.5, capthick=1.5,
                 linestyle="-", linewidth=1, label="Máxima")
-    ax.errorbar(stats[finite, 0], stats[finite, 3], yerr=stats[finite, 4], marker="s", markersize=5, capsize=4, elinewidth=1.5, capthick=1.5,
-                linestyle="-", linewidth=1, label="Cuadrática media")
+    if not args.max_only:
+        ax.errorbar(stats[finite, 0], stats[finite, 3], yerr=stats[finite, 4], marker="s", markersize=5, capsize=4, elinewidth=1.5, capthick=1.5,
+                    linestyle="-", linewidth=1, label="Cuadrática media")
     if args.tolerance:
         e0 = np.mean([r["e"][0] for r in runs])
         ax.axhline(args.tolerance * e0, color="k", linestyle="--", linewidth=1, label="Tolerancia")
