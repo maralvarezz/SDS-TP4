@@ -1,14 +1,5 @@
 package ar.edu.itba.sds.tp4.integrator;
 
-/**
- * Verlet original (Teorica 4, diapositivas 13-15):
- * r(t+dt) = 2 r(t) - r(t-dt) + dt^2 a(t),   v(t) = (r(t+dt) - r(t-dt)) / 2dt.
- * r(-dt) se obtiene con Euler evaluado en -dt (diapositiva 14).
- *
- * Si la aceleracion depende de v(t), v(t) depende de r(t+dt): se resuelve por iteracion
- * de punto fijo sobre r(t+dt) usando la diferencia central. Con fuerzas que dependen solo de
- * la posicion (Sistema 2) la iteracion converge en la primera pasada.
- */
 public final class VerletIntegrator implements Integrator {
     private static final int MAX_ITER = 100;
     private static final double REL_TOL = 1e-15;

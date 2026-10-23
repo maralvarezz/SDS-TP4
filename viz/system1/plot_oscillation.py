@@ -1,8 +1,3 @@
-"""Oscilacion del Sistema 1 (oscilador amortiguado): posicion vs tiempo, solucion analitica y los cuatro integradores.
-
-Lee output/<run>/trajectory_<metodo>_dt<dt>.txt (columnas: t, r_numerica, r_analitica).
-Uso: python viz/system1/plot_oscillation.py output/system1 --dt 5.000000e-03 --out output/figures/system1_oscilacion.png
-"""
 import argparse
 import sys
 from pathlib import Path
@@ -10,7 +5,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.style import apply_style, plt  # noqa: E402
+from common.style import apply_style, plt
 
 LABELS = {"beeman": "Beeman", "verlet": "Verlet original",
           "velocityVerlet": "Velocity Verlet", "eulerPC": "Euler predictor-corrector"}

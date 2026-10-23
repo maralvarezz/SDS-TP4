@@ -1,9 +1,5 @@
 package ar.edu.itba.sds.tp4.integrator;
 
-/**
- * Beeman con fuerzas dependientes de la velocidad, variante predictor-corrector
- * (Teorica 4, diapositiva 20). a(t-dt) inicial por Euler evaluado en -dt.
- */
 public final class BeemanIntegrator implements Integrator {
     private AccelerationLaw law;
     private double dt, r, v, aCur, aPrev;

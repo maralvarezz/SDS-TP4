@@ -8,16 +8,10 @@ import java.util.function.BiConsumer;
 public final class OscillatorExperiment {
     private OscillatorExperiment() {}
 
-    /** Numero de pasos n = round(tf/dt); exige que n*dt coincida con tf. */
     public static int steps(double totalTime, double dt) {
         return ar.edu.itba.sds.tp4.TimeSteps.count(totalTime, dt);
     }
 
-    /**
-     * ECM(dt) = (1/n) sum_{i=1..n} (r_num(t_i) - r_analitica(t_i))^2, t_i = i dt.
-     * El paso i=0 se excluye porque el error es nulo por construccion.
-     * Si trajectory != null recibe (t_i, r_num_i) para i = 0..n.
-     */
     public static double ecm(DampedOscillator osc, String integratorName, double dt, double totalTime,
                              BiConsumer<Double, double[]> trajectory) {
         int n = steps(totalTime, dt);

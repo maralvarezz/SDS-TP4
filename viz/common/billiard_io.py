@@ -1,8 +1,3 @@
-"""Lectura de salidas del billar circular y observables derivados (postproceso).
-
-El motor solo escribe posiciones y velocidades (states.txt), el evento de primer contacto (contacts.txt)
-y metadatos. Todo observable (energia, F_u, t90, ...) se calcula aca.
-"""
 from pathlib import Path
 
 import numpy as np
@@ -34,7 +29,6 @@ def read_runtime_ms(run_dir):
 
 
 def read_states(run_dir):
-    """Devuelve (t[S], x[S,N], y[S,N], vx[S,N], vy[S,N], used[S,N]) desde states.txt."""
     data = np.loadtxt(Path(run_dir) / "states.txt")
     n = read_meta(run_dir)["n"]
     s = data.shape[0] // n
@@ -43,7 +37,6 @@ def read_states(run_dir):
 
 
 def read_contacts(run_dir):
-    """Devuelve (ids, tiempos) del primer contacto con un obstaculo, ordenados por tiempo."""
     f = Path(run_dir) / "contacts.txt"
     data = np.loadtxt(f, ndmin=2)
     if data.size == 0:
@@ -52,13 +45,10 @@ def read_contacts(run_dir):
 
 
 def kinetic_energy(m, vx, vy):
-    """Energia cinetica total por instante: (m/2) sum_i |v_i|^2. vx, vy de forma [S, N]."""
     return 0.5 * m * np.sum(vx ** 2 + vy ** 2, axis=1)
 
 
 def potential_energy(meta, x, y):
-    """Energia potencial elastica total por instante, mismo modelo que la fuerza (F = -k xi, U = k xi^2 / 2):
-    pares: xi = 2r - d_ij ; pared: xi = |r_i| + r - R ; obstaculos en (+-x0, 0): xi = 2r - d. Solo xi > 0 cuenta."""
     r, R, k = meta["r"], meta["R"], meta["k"]
     s, n = x.shape
     u = np.zeros(s)

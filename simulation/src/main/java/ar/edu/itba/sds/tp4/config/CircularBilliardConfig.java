@@ -1,6 +1,5 @@
 package ar.edu.itba.sds.tp4.config;
 
-/** Configuracion del Sistema 2 (billar circular). Unidades SI. */
 public record CircularBilliardConfig(String system, Long seed, String integrationMethod, Simulation simulation,
                                      Particles particles, Domain domain, Interaction interaction,
                                      Obstacles obstacles, InitialCondition initialCondition, Output output) {
@@ -13,17 +12,10 @@ public record CircularBilliardConfig(String system, Long seed, String integratio
 
     public record Interaction(double springConstant) {}
 
-    /** x0: centros en (-x0, 0) y (+x0, 0); radio = radio de las particulas. */
     public record Obstacles(boolean enabled, double x0) {}
 
-    /** mode: "random" (rechazo secuencial) o "hexagonal" (red hexagonal con subconjunto aleatorio). */
     public record InitialCondition(String mode) {}
 
-    /**
-     * stateEverySteps: escribir posiciones y velocidades cada n pasos (0 = no escribir).
-     * El motor no calcula ni escribe observables (energia, F_u, etc.): eso es postproceso.
-     * El primer contacto de cada particula siempre se registra (contacts.txt).
-     */
     public record Output(String directory, boolean overwrite, int stateEverySteps) {}
 
     public CircularBilliardConfig {

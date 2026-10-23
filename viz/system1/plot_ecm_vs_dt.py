@@ -1,8 +1,3 @@
-"""ECM vs dt para los cuatro integradores (Sistema 1, punto 1.2).
-
-Lee output/<run>/ecm.txt (columnas: method dt_s steps ecm_m2) generado por el motor Java.
-Uso: python viz/system1/plot_ecm_vs_dt.py output/system1/ecm.txt --out output/figures/system1_ecm_vs_dt.png
-"""
 import argparse
 import sys
 from pathlib import Path
@@ -10,7 +5,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.style import apply_style, plt  # noqa: E402
+from common.style import apply_style, plt
 
 LABELS = {"beeman": "Beeman", "verlet": "Verlet original",
           "velocityVerlet": "Velocity Verlet", "eulerPC": "Euler predictor-corrector"}

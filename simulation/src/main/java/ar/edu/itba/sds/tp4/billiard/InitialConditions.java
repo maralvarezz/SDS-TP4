@@ -5,13 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Condiciones iniciales sin solapes (particula-particula, particula-obstaculo, particula-pared).
- * Velocidades: modulo v0 y angulo uniforme en [0, 2 pi).
- * "random": rechazo secuencial (se traba para fraccion de area > ~0.5).
- * "hexagonal": sitios de una red hexagonal con rotacion y desplazamiento aleatorios, se eligen N al azar;
- *              permite densidades altas (N > 600).
- */
 public final class InitialConditions {
     private static final double EPS = 1e-9;
     private static final int MAX_ATTEMPTS_PER_PARTICLE = 200_000;

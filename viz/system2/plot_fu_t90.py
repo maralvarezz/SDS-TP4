@@ -1,17 +1,3 @@
-"""Punto 2.2: fraccion de particulas usadas F_u(t) y tiempo de 90 % t90 vs x0.
-
-Lee <root>/*/seed_*/ : contacts.txt (evento fresca->usada, "id t_s") y metadata.txt (N, x0, totalTime).
-Definiciones (se calculan aca; el motor solo registra el evento):
-  N_u(t)  = cantidad de particulas con primer contacto en un obstaculo en un tiempo <= t
-  F_u(t)  = N_u(t) / N
-  t90     = menor t con F_u(t) >= 0.9, es decir el instante del ceil(0.9 N)-esimo primer contacto.
-            Si la corrida no llega a F_u = 0.9 antes de t_max, t90 no esta definido ("no alcanzado").
-Para cada x0: media y desvio muestral (ddof = 1) de F_u(t) sobre todas las realizaciones, y de t90 sobre las
-realizaciones que lo alcanzan; se informa cuantas lo alcanzan y F_u(t_max).
-
-Uso: python3 viz/system2/plot_fu_t90.py output/sys2_exp2 --out-dir output/figures/sys2_exp2
-        [--show-x0 0.0175 0.1 0.25 0.4925] [--compare-root output/sys2_exp2_N20 --label N=100 --compare-label N=20]
-"""
 import argparse
 import math
 import sys
@@ -21,8 +7,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.billiard_io import read_contacts, read_meta  # noqa: E402
-from common.style import apply_style, plt  # noqa: E402
+from common.billiard_io import read_contacts, read_meta
+from common.style import apply_style, plt
 
 THRESHOLD = 0.9
 
@@ -98,8 +84,6 @@ def main():
         summaries[name] = summarize(by_x0)
         print_table(name, summaries[name], tf)
 
-    # --- F_u(t) de UNA sola corrida (misma semilla para todos los x0); el resto de las realizaciones
-    # se usan para t90 vs x0 (media y desvio) ---
     for k, (name, by_x0) in enumerate(datasets.items()):
         show = sorted(args.show_x0) if args.show_x0 else sorted(by_x0)
         fig, ax = plt.subplots()
@@ -125,7 +109,6 @@ def main():
         fig.savefig(out / f"fu_vs_time_{k}.png")
         plt.close(fig)
 
-    # --- t90 vs x0 ---
     fig, ax = plt.subplots()
     for (name, rows), mk in zip(summaries.items(), ["o", "s"]):
         full = [r for r in rows if r["reached"] == r["runs"]]

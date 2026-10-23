@@ -10,13 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 
-/**
- * Archivos de salida (texto, separador espacio, decimales con punto, SI):
- *  metadata.txt  key=value con todos los parametros de la corrida.
- *  states.txt    "# t_s id x_m y_m vx_mps vy_mps used" (used: 0 fresca / 1 usada), cada stateEverySteps pasos.
- *  contacts.txt  "# id t_first_obstacle_contact_s", evento fresca->usada (una fila por particula usada).
- *  summary.txt   key=value (seed, N, steps, runtimeMilliseconds).
- */
 public final class BilliardOutputWriter implements BilliardObserver, AutoCloseable {
     private final Path dir;
     private final CircularBilliardConfig cfg;

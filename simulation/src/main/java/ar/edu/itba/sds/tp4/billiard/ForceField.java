@@ -2,13 +2,6 @@ package ar.edu.itba.sds.tp4.billiard;
 
 import java.util.Arrays;
 
-/**
- * Fuerzas de contacto del billar circular (resorte lineal normal, sin disipacion):
- * F_i = sum_j -k * xi_ij * e_ij,  xi_ij = r_i + r_j - |r_j - r_i| > 0,  e_ij = (r_j - r_i)/|r_j - r_i|.
- * Los j pueden ser otras particulas, los dos obstaculos fijos (-x0,0), (+x0,0) de radio r,
- * o la particula imagen de la pared (se recalcula en cada llamada). Unidades SI.
- * Particula-particula usa una grilla de celdas de lado 2r (costo O(N)).
- */
 public final class ForceField {
     private final double wallRadius, radius, k;
     private final boolean hasObstacles;
@@ -31,20 +24,14 @@ public final class ForceField {
         this.next = new int[n];
     }
 
-    /** Superposicion xi con la pared via particula imagen; <= 0 si no hay contacto. */
     public static double wallOverlap(double x, double y, double wallRadius, double r) {
         double rho = Math.hypot(x, y);
         if (rho <= wallRadius - r) return 0;
         double nx = x / rho, ny = y / rho;
-        double dx = (wallRadius + r) * nx - x, dy = (wallRadius + r) * ny - y; // r_img - r_i
+        double dx = (wallRadius + r) * nx - x, dy = (wallRadius + r) * ny - y;
         return 2 * r - Math.hypot(dx, dy);
     }
 
-    /**
-     * Calcula fuerzas en fx, fy (se sobrescriben) y marca en touchedObstacle[i] las particulas
-     * con xi > 0 contra algun obstaculo en esta configuracion. Devuelve la energia potencial
-     * total sum 1/2 k xi^2 (pares + pared + obstaculos).
-     */
     public double compute(double[] x, double[] y, double[] fx, double[] fy, boolean[] touchedObstacle) {
         int n = x.length;
         Arrays.fill(fx, 0);
@@ -54,7 +41,6 @@ public final class ForceField {
         double contactDist = 2 * radius;
         double contactDist2 = contactDist * contactDist;
 
-        // grilla
         Arrays.fill(head, -1);
         for (int i = 0; i < n; i++) {
             int c = cell(x[i], y[i]);
@@ -81,7 +67,6 @@ public final class ForceField {
             }
         }
         for (int i = 0; i < n; i++) {
-            // pared: particula imagen en (R + r) n_hat
             double rho = Math.hypot(x[i], y[i]);
             if (rho > wallRadius - radius) {
                 double nx = x[i] / rho, ny = y[i] / rho;

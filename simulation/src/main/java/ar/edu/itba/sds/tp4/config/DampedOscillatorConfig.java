@@ -2,12 +2,10 @@ package ar.edu.itba.sds.tp4.config;
 
 import java.util.List;
 
-/** Configuracion del Sistema 1 (oscilador amortiguado). Unidades SI. */
 public record DampedOscillatorConfig(String system, Oscillator oscillator, Sweep sweep, Output output) {
 
     public record Oscillator(double mass, double springConstant, double damping, double amplitude, double totalTime) {}
 
-    /** trajectoryDts: subconjunto de dtValues para los que ademas se escribe la trayectoria. */
     public record Sweep(List<String> integrators, List<Double> dtValues, List<Double> trajectoryDts) {
         public Sweep {
             trajectoryDts = trajectoryDts == null ? List.of() : trajectoryDts;

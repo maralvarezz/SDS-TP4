@@ -1,25 +1,3 @@
-"""Punto 2.3: distribucion de rapideces f(v) y ajuste de Maxwell-Boltzmann (N = 100, sin obstaculos).
-
-Lee <root>/*/seed_*/states.txt (posiciones y velocidades) y metadata.txt. Todo observable se calcula aca.
-
-Observables:
-  v_i(t)  = |velocidad de la particula i| en el instante t
-  <v>(t)  = (1/N) sum_i v_i(t)                       (evolucion temporal; sirve para elegir el estacionario)
-  f(v)    : PDF por histograma, y_j = N_j / (N_total * dv_j)  (N_j: cuentas en el bin j, N_total: muestras totales)
-Modelo (2D): f(v; kBT) = (m v / kBT) exp(-m v^2 / (2 kBT)), con kBT como unico parametro libre.
-Ajuste (Teorica 0): E(kBT) = sum_j [ y_j - f(v_j; kBT) ]^2 sobre los centros v_j de los bins; se barre kBT en una
-grilla y el minimo de E da el valor ajustado. Se ajusta cada realizacion por separado y se informa media y desvio
-muestral (ddof = 1) entre realizaciones; la curva E(kBT) mostrada es la del histograma promedio.
-Referencia (no es un ajuste): kBT = m v0^2 / 2 = energia cinetica inicial por particula.
-
-El estado estacionario se elige a mano: primero correr SIN --t-start para ver <v>(t); luego repetir con --t-start.
-Con --t-start se ajusta k_BT en el estacionario y se grafica, para cada instante de --times, el histograma de f(v) (todas las
-realizaciones juntas, en el instante guardado mas cercano) junto a la curva de Maxwell-Boltzmann ajustada (media y desvio muestral entre realizaciones): se ve como la
-distribucion parte lejos de la curva (t = 0: todas con |v| = v0) y se va pareciendo a ella.
-
-Uso: python3 viz/system2/plot_speed_distribution.py output/sys2_exp3 --out-dir output/figures/sys2_exp3
-        [--t-start 2] [--times 0 0.1 0.3 1 3 10] [--bins 40] [--vmax 3]
-"""
 import argparse
 import math
 import sys
@@ -28,8 +6,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.billiard_io import read_meta, read_states  # noqa: E402
-from common.style import apply_style, plt  # noqa: E402
+from common.billiard_io import read_meta, read_states
+from common.style import apply_style, plt
 
 
 def mb_pdf(v, m, kbt):
@@ -51,7 +29,6 @@ def fit_kbt(centers, y, m, grid):
 
 
 def fmt_pm(mean, std):
-    """Cifras significativas del valor segun el error (1 cifra, 2 si empieza en 1)."""
     if not np.isfinite(std) or std <= 0:
         return f"{mean:.4g}"
     exp = math.floor(math.log10(std))
@@ -97,7 +74,6 @@ def main():
     centers = 0.5 * (edges[1:] + edges[:-1])
     print(f"{len(runs)} realizaciones, N = {n}, m = {m} kg, v0 = {v0} m/s, m v0^2/2 = {e0:.5f} J, {len(t)} instantes")
 
-    # --- <v>(t) ---
     mean_v = np.array([r["v"].mean(axis=1) for r in runs])
     mu, sd = mean_v.mean(axis=0), mean_v.std(axis=0, ddof=1) if len(runs) > 1 else np.zeros(len(t))
     fig, ax = plt.subplots()
@@ -115,7 +91,6 @@ def main():
         print(f"Figuras en {out}/")
         return
 
-    # --- estado estacionario + ajuste ---
     sel = t >= args.t_start
     if sel.sum() < 2:
         sys.exit("t-start deja menos de 2 instantes")
@@ -137,13 +112,11 @@ def main():
     print(f"kBT del histograma promedio = {k_pool:.5f} J   |  m v0^2/2 = {e0:.5f} J  |  cociente kBT/(m v0^2/2) = {k_mean / e0:.3f}")
     print(f"<v> medida en el estacionario = {mean_v[:, sel].mean():.4f} m/s  |  <v> MB ajustado = {mb_mean_speed(m, k_mean):.4f} m/s")
 
-    # --- evolucion temporal: f(v) en cada instante vs la curva de Maxwell-Boltzmann ajustada (misma curva en todos) ---
     vv = np.linspace(1e-4, args.vmax, 400)
     mb_curve = mb_pdf(vv, m, k_mean)
     y_common = 1.6 * mb_curve.max()
     for tt in args.times:
         i = int(np.argmin(np.abs(t - tt)))
-        # histograma de cada realizacion en el instante t (N muestras); barras = media, barras de error = desvio muestral
         ys_t = np.array([histogram_pdf(r["v"][i], edges) for r in runs])
         y = ys_t.mean(axis=0)
         y_sd = ys_t.std(axis=0, ddof=1) if len(runs) > 1 else np.zeros_like(y)
@@ -169,9 +142,6 @@ def main():
     fig.savefig(out / "fv_steady_fit.png")
     plt.close(fig)
 
-    # Error del ajuste E(c) (Teorica 0, diapositiva 70): E_i(c) = sum_j [y_ij - f(v_j; c)]^2 de cada realizacion i,
-    # promediado sobre las realizaciones. Tiene el mismo minimo c* que el ajuste sobre el promedio de las y
-    # (difiere solo en una constante: la varianza entre realizaciones), y E(c*) > 0 por el ruido estadistico.
     err_runs = np.mean([fit_kbt(centers, y, m, grid)[1] for y in ys], axis=0)
     win = (grid >= 0.7 * k_pool) & (grid <= 1.3 * k_pool)
     i_min = int(np.argmin(err_runs))

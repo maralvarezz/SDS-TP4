@@ -1,12 +1,3 @@
-"""Animacion del billar circular (Sistema 2) a partir de states.txt + metadata.txt (output primario).
-
-Particulas frescas en azul, usadas en rojo, obstaculos en negro, pared como circunferencia.
-Muestra el tiempo y la fraccion de particulas usadas F_u (calculada aca, a partir de la columna 'used').
-
-Uso: python3 viz/system2/animate_billiard.py <directorio_de_la_corrida> [--out video.mp4] [--stride 3] [--fps 30]
-  - cada frame corresponde a 'stride' estados guardados; los fps se calculan para que el video corra a tiempo real
-    (fps = speed / (stride * dt_estado)); --speed 2 lo acelera x2.
-"""
 import argparse, subprocess, sys
 from pathlib import Path
 import numpy as np
@@ -45,12 +36,11 @@ def main():
     data = np.loadtxt(run / "states.txt", comments="#")
     t_all = np.unique(data[:, 0])
     n = int(meta["N"])
-    data = data[np.argsort(data[:, 0], kind="stable")].reshape(len(t_all), n, -1)  # (frame, particula, col)
-    # asegurar orden por id dentro de cada estado
+    data = data[np.argsort(data[:, 0], kind="stable")].reshape(len(t_all), n, -1)
     order = np.argsort(data[:, :, 1], axis=1)
     data = np.take_along_axis(data, order[:, :, None], axis=1)
     dt_state = float(t_all[1] - t_all[0])
-    fps = args.speed / (args.stride * dt_state)   # tiempo real: cada frame avanza stride*dt_state s y dura 1/fps s
+    fps = args.speed / (args.stride * dt_state)
     frames = np.arange(0, len(t_all), args.stride)
     if args.tmax is not None:
         frames = frames[t_all[frames] <= args.tmax]

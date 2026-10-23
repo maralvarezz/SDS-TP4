@@ -1,6 +1,5 @@
 package ar.edu.itba.sds.tp4;
 
-/** Numero de pasos temporales: n = round(totalTime/dt), exigiendo que n*dt coincida con totalTime. */
 public final class TimeSteps {
     private TimeSteps() {}
 

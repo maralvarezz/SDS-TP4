@@ -1,16 +1,3 @@
-#!/usr/bin/env python3
-"""Ejecutor delgado de campanas: lanza el motor Java sobre una grilla de parametros x seeds.
-
-No contiene logica fisica ni de analisis. Cada corrida queda en
-  <outputRoot>/<clave_valor ...>/seed_<seed>/   con su config.json (copia exacta de lo ejecutado),
-  run.log, y los archivos que escribe el motor. Si summary.txt ya existe la corrida se saltea
-  (reanudable); usar --force para repetirla.
-
-Uso: python3 scripts/run_campaign.py input/campaigns/<campana>.json [--jobs N] [--dry-run] [--force]
-Formato de la campana (JSON):
-  name, template (config base), outputRoot, realizations (cantidad), baseSeed (la seed de la realizacion i es baseSeed+i), grid {"a.b.c": [valores]} (producto cartesiano),
-  derived {"a.b.c": "expresion con {otra.clave}"} (opcional), jobs (opcional; usar 1 si se mide runtime).
-"""
 import argparse
 import copy
 import itertools
@@ -48,7 +35,7 @@ def label(key, value):
 
 def eval_derived(cfg, expr):
     substituted = re.sub(r"\{([^}]+)\}", lambda m: repr(get_path(cfg, m.group(1))), expr)
-    return eval(substituted, {"__builtins__": {}}, SAFE)  # noqa: S307 (expresiones de la propia campana)
+    return eval(substituted, {"__builtins__": {}}, SAFE)
 
 
 def build_runs(campaign):

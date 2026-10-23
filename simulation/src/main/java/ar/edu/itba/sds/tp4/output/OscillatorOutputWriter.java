@@ -8,10 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 
-/**
- * Escribe: metadata.txt, ecm.txt (method dt_s steps ecm_m2) y trajectory_<metodo>_dt<dt>.txt
- * (t_s r_numeric_m r_analytic_m). Separador: espacio. Decimales con punto.
- */
 public final class OscillatorOutputWriter implements AutoCloseable {
     private final Path dir;
     private final BufferedWriter ecm;

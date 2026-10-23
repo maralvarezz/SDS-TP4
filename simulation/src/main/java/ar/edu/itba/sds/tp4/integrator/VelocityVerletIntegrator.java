@@ -1,9 +1,5 @@
 package ar.edu.itba.sds.tp4.integrator;
 
-/**
- * Velocity Verlet (Teorica 4, diapositiva 17). Con aceleracion dependiente de v,
- * a(t+dt) se resuelve por iteracion de punto fijo sobre v(t+dt).
- */
 public final class VelocityVerletIntegrator implements Integrator {
     private static final int MAX_ITER = 100;
     private static final double REL_TOL = 1e-15;

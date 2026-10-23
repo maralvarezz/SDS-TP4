@@ -1,11 +1,5 @@
 package ar.edu.itba.sds.tp4.billiard;
 
-/**
- * Dinamica molecular regida por paso temporal con Verlet original (Teorica 4, diap. 13-15):
- * r(t+dt) = 2 r(t) - r(t-dt) + dt^2 F(t)/m,  v(t) = (r(t+dt) - r(t-dt)) / 2dt.
- * r(-dt) por Euler evaluado en -dt. Se calcula un paso extra (n = N) para obtener v(t_N).
- * Las fuerzas dependen solo de las posiciones, por lo que Verlet no requiere iteracion.
- */
 public final class BilliardSimulation {
     private final ForceField field;
     private final double mass, dt;

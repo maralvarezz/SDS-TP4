@@ -2,10 +2,6 @@ package ar.edu.itba.sds.tp4.oscillator;
 
 import ar.edu.itba.sds.tp4.integrator.AccelerationLaw;
 
-/**
- * Oscilador amortiguado m r'' = -k r - gamma r' (Teorica 4, diapositiva 37).
- * Condiciones iniciales: r(0) = A, v(0) = -A gamma / (2m). Unidades SI.
- */
 public record DampedOscillator(double mass, double springConstant, double damping, double amplitude) {
 
     public DampedOscillator {

@@ -1,17 +1,3 @@
-"""Punto 2.4.b: mapa de calor del tiempo medio t90 (o t100) en el plano (x0, N).
-
-Combina corridas de varias carpetas (cada una con <root>/*/seed_*/ : contacts.txt, metadata.txt, summary.txt):
-  - 2.2  (N = 100 y N = 20, 12 valores de x0)           -> output/sys2_exp2, output/sys2_exp2_N20
-  - 2.4  (x0 = r, N = 25..600)                           -> output/sys2_exp4
-  - 2.4.b (N = 50..500 x 9 valores de x0)                -> output/sys2_exp4b
-Las celdas (N, x0) se arman con las corridas de todas las carpetas que las contengan; cada corrida trae su t_max.
-Definiciones (iguales a las de 2.2 y 2.4): t90 = instante del ceil(0.9 N)-esimo primer contacto con un obstaculo;
-t100 = instante del N-esimo. Media sobre las corridas que alcanzan el umbral antes de su t_max; las celdas donde
-no todas lo alcanzan se rayan, y donde ninguna lo alcanza quedan en gris.
-
-Uso: python3 viz/system2/plot_heatmap_t90.py output/sys2_exp2 output/sys2_exp2_N20 output/sys2_exp4 output/sys2_exp4b
-        --out-dir output/figures/sys2_exp4b [--metric t90|t100] [--n-values 20 50 100 200 300 400 500] [--annotate]
-"""
 import argparse
 import math
 import sys
@@ -22,8 +8,8 @@ import numpy as np
 from matplotlib.colors import LogNorm
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.billiard_io import read_contacts, read_meta  # noqa: E402
-from common.style import apply_style, plt  # noqa: E402
+from common.billiard_io import read_contacts, read_meta
+from common.style import apply_style, plt
 
 
 def load(roots):
@@ -113,7 +99,6 @@ def main():
                 ax.add_patch(plt.Rectangle((j, i), 1, 1, fill=False, hatch="//", edgecolor="white", linewidth=0))
             if args.annotate and reached[i, j]:
                 ax.text(j + 0.5, i + 0.5, f"{mean[i, j]:.0f}", ha="center", va="center", fontsize=14, color="white")
-    # mejor x0 de cada fila: el que minimiza el tiempo medio
     for i in range(len(ns)):
         if np.isfinite(mean[i]).any():
             j = int(np.nanargmin(mean[i]))

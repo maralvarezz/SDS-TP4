@@ -20,7 +20,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Locale;
 import java.util.Random;
 
-/** Uso: java -jar sds_tp4_g8.jar <config.json>. El campo "system" elige el sistema a simular. */
 public final class Main {
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
@@ -36,7 +35,6 @@ public final class Main {
         }
     }
 
-    /** Copia exacta del JSON ejecutado dentro de la carpeta de salida: cada corrida conserva su configuracion. */
     private static void saveConfigCopy(Path configFile, String outputDirectory) throws IOException {
         Path target = Path.of(outputDirectory).resolve("config.json");
         if (!configFile.toAbsolutePath().normalize().equals(target.toAbsolutePath().normalize())) {

@@ -1,20 +1,3 @@
-"""Punto 2.1.b: tiempo de ejecucion vs N (billar con obstaculos en contacto, t_f = 30 s).
-
-Lee <root>/*/seed_*/ : metadata.txt (N) y summary.txt (runtimeMilliseconds). Alcance del tiempo medido:
-lazo de integracion + escrituras habilitadas; excluye la generacion de condiciones iniciales.
-
-Observable: T(N) = tiempo de ejecucion de una corrida. Para cada N se reporta la media y el desvio estandar
-muestral (ddof = 1) entre las realizaciones.
-
-Ajuste de la ley T = c N^b (Teorica 0): para cada exponente b de una grilla, el c que minimiza
-E(b, c) = sum_i [T_i - c N_i^b]^2 es c(b) = sum_i T_i N_i^b / sum_i N_i^(2b); se grafica E(b) = E(b, c(b)) y el
-minimo da el exponente. Las T_i son las medias por N.
-
-Comparacion con TP3 (misma computadora): --tp3-log guarda la salida de viz/hexagonal_execution_time.py del TP3
-(lineas "N=25 realizacion 1/10 seed=... runtime=... ms"); se recalculan media y desvio con el mismo criterio.
-
-Uso: python3 viz/system2/plot_runtime_vs_N.py output/sys2_exp1b --out-dir output/figures/sys2_exp1b [--tp3-log tp3.log]
-"""
 import argparse
 import re
 import sys
@@ -24,8 +7,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.billiard_io import read_kv, read_meta, read_runtime_ms  # noqa: E402
-from common.style import apply_style, plt  # noqa: E402
+from common.billiard_io import read_kv, read_meta, read_runtime_ms
+from common.style import apply_style, plt
 
 
 def load_tp4(root):
@@ -121,8 +104,6 @@ def main():
         fig.savefig(out / f"runtime_vs_N_{scale}.png")
         plt.close(fig)
 
-    # Zoom en el cruce TP4 / TP3. El cruce se estima suponiendo que, entre dos N medidos consecutivos, log T es lineal
-    # en log N (es decir, las rectas que se ven en la escala log-log) y resolviendo la interseccion de ambas rectas.
     if len(series) == 2:
         (n4, m4, s4, _), (n3, m3, s3, _) = series.values()
         common = sorted(set(n4.tolist()) & set(n3.tolist()))
@@ -133,7 +114,7 @@ def main():
             la, lb = np.log(a), np.log(b)
             d_a = np.log(m4[i4[a]]) - np.log(m3[i3[a]])
             d_b = np.log(m4[i4[b]]) - np.log(m3[i3[b]])
-            if d_a * d_b < 0:  # cambia el signo de log(T4/T3): hay cruce en [a, b]
+            if d_a * d_b < 0:
                 f = d_a / (d_a - d_b)
                 ln_star = la + f * (lb - la)
                 t_star = np.exp(np.log(m4[i4[a]]) + f * (np.log(m4[i4[b]]) - np.log(m4[i4[a]])))
@@ -142,7 +123,6 @@ def main():
         if cross:
             a, b, n_star, t_star = cross
             print(f"\nCruce TP4/TP3 entre N={a} y N={b}: N* = {n_star:.0f}, T* = {t_star:.2f} s (interpolacion log-log)")
-            # zoom moderado: un N medido antes y uno despues del par que enmarca el cruce, con algo de margen
             k = common.index(a)
             x_lo = common[max(k - 1, 0)] * 0.7
             x_hi = common[min(k + 2, len(common) - 1)] * 1.085
@@ -157,7 +137,6 @@ def main():
             ax.set_xlim(x_lo, x_hi)
             y_lo = min(vis) * 0.25
             ax.set_ylim(y_lo, max(vis) * 0.8)
-            # punto de cruce y linea punteada que baja hasta el eje x, donde se rotula su valor
             ax.vlines(n_star, y_lo, t_star, color="k", linestyle=":", linewidth=1.5, zorder=4)
             ax.plot([n_star], [t_star], marker="o", markersize=9, color="k", linestyle="none", zorder=5)
             ticks = [n for n in common if x_lo <= n <= x_hi] + [n_star]
@@ -173,7 +152,6 @@ def main():
         else:
             print("\nAviso: las curvas TP4 y TP3 no se cruzan en el rango medido; no se genera el zoom.")
 
-    # Costo por paso y por particula: t_c = T / (pasos * N). Si el costo fuera exactamente lineal en N seria constante.
     ns, mean, std, _ = series[args.label_tp4]
     scale_ns = 1e9 / (steps * ns)
     print(f"\nCosto por paso y por particula (ns), pasos = {steps}:")

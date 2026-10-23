@@ -1,20 +1,3 @@
-"""Punto 2.4: tiempos t90 y t100 vs densidad. Reutiliza las corridas de 2.1.b (obstaculos en contacto, x0 = r).
-
-Lee <root>/*/seed_*/ : contacts.txt (evento fresca->usada, "id t_s"), metadata.txt (N, R, totalTime). No se simula nada nuevo.
-Definiciones (se calculan aca; el motor solo registra el evento):
-  rho     = N / (pi R^2)                      densidad de particulas (1/m^2), R = radio del dominio
-  F_u(t)  = (cantidad de particulas con primer contacto <= t) / N
-  t90     = instante del ceil(0.9 N)-esimo primer contacto   (menor t con F_u >= 0.9)
-  t100    = instante del N-esimo primer contacto             (menor t con F_u = 1)
-Si una corrida no alcanza el umbral antes de t_max, ese tiempo "no esta alcanzado" y la corrida no entra en la media
-(la media sobre las que si lo alcanzan queda subestimada: se informa cuantas lo alcanzan). Tambien se grafica F_u(t_max).
-Media y desvio muestral (ddof = 1) entre realizaciones.
-
-Se pueden pasar varias carpetas: para cada N se usa la corrida de la ULTIMA carpeta que lo contenga (permite alargar t_max
-solo para los N altos). Cada N conserva su propio t_max.
-
-Uso: python3 viz/system2/plot_t90_t100_vs_density.py output/sys2_exp4 output/sys2_exp4_long --out-dir output/figures/sys2_exp4
-"""
 import argparse
 import math
 import sys
@@ -24,8 +7,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.billiard_io import read_contacts, read_meta  # noqa: E402
-from common.style import apply_style, plt  # noqa: E402
+from common.billiard_io import read_contacts, read_meta
+from common.style import apply_style, plt
 
 
 def load(root):
@@ -78,7 +61,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     by_n = {}
     for root in args.roots:
-        by_n.update(load(root))  # la ultima carpeta que contiene a N reemplaza a las anteriores
+        by_n.update(load(root))
     ns = sorted(by_n)
     R = by_n[ns[0]][0]["R"]
     tfs = [by_n[n][0]["tf"] for n in ns]

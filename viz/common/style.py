@@ -1,4 +1,3 @@
-"""Estilo comun de figuras (Guia de presentaciones: sin titulos, fuente >= 20, notacion 10^n)."""
 import matplotlib
 
 matplotlib.use("Agg")
